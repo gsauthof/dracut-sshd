@@ -5,7 +5,7 @@ access to the Dracut emergency shell (i.e. early user space).
 
 2018, Georg Sauthoff <mail@gms.tf>, GPLv3+
 
-## Example: Open Encrypted Root
+## Example: Open Encrypted Root Filesystem
 
 After booting a Fedora system with encrypted root filesystem
 (i.e. a filesystem on a [LUKS volume to be opened with
@@ -244,6 +244,7 @@ though. Also, they use Dropbear and Tinyssh as ssh daemon.
 ## Tested Environments
 
 - Fedora 28
+- Fedora 27
 
 [arch]: https://wiki.archlinux.org/index.php/Dm-crypt/Specialties#Remote_unlocking_.28hooks:_netconf.2C_dropbear.2C_tinyssh.2C_ppp.29
 [bug868421]: https://bugzilla.redhat.com/show_bug.cgi?id=868421
