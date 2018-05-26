@@ -12,7 +12,11 @@ check() {
 
 # called by dracut
 depends() {
-    echo systemd-networkd network
+    # e.g. CentOS 7 doesn't has systemd-networkd
+    if [ -f /usr/lib/systemd/systemd-networkd ]; then
+        echo systemd-networkd
+    fi
+    echo network
 }
 
 # called by dracut

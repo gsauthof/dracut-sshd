@@ -1,7 +1,8 @@
 [Unit]
 Description=OpenSSH server daemon
 Documentation=man:sshd(8) man:sshd_config(5)
-After=network.target
+DefaultDependencies=no
+Before=cryptsetup.target
 
 [Service]
 Type=notify
@@ -14,4 +15,4 @@ Restart=on-failure
 RestartSec=42s
 
 [Install]
-WantedBy=cryptsetup.target sysinit.target
+WantedBy=sysinit.target

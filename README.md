@@ -1,7 +1,7 @@
 This [Dracut][dracut] module (dracut-sshd) integrates the
 [OpenSSH][ossh] sshd into the [initramfs][iramfs]. It allows for
 remote unlocking of a fully encrypted root filesystem and remote
-access to the Dracut emergency shell (i.e. early user space).
+access to the Dracut emergency shell (i.e. early userspace).
 
 2018, Georg Sauthoff <mail@gms.tf>, GPLv3+
 
@@ -177,12 +177,34 @@ to resume the boot process then.
 
 ## Network
 
-On some systems and alternative to [Networkd][networkd] might be
-setting up the old-school [ifcfg][ifcfg] network scripts under
-`/etc/sysconfig/network-scripts`. Although, the `network` Dracut
-module under Fedora 28 doesn't include them in the initramfs (and
-those scripts don't reliably bring up the network after switch-root,
-as well).
+An alternative to the [networkd][networkd] configuration is to
+configure network via additional [Dracut command line
+parameters][dracut-cmdline].
+
+On systems without networkd (e.g. CentOS 7) this is the only way
+to enable network connectivity in early userspace. For example,
+the following parameters enable DHCP on all network interfaces in
+early userspace:
+
+    rd.neednet=1 ip=dhcp
+
+They need to be appended to `GRUB_CMDLINE_LINUX=` in
+`/etc/sysconfig/grub` and to be effective the Grub config then
+needs to be regenerated:
+
+    # grub2-mkconfig -o  /etc/grub2.cfg
+    # grub2-mkconfig -o  /etc/grub2-efi.cfg
+
+Note that on distributions like CentOS 7/Fedora 27/28 there is
+also the old-school [ifcfg][ifcg] network scripts system under
+`/etc/sysconfig/network-scripts` that can be used instead of
+[NetworkManager][nm]. It can be launched via the auto-generated
+`network` service that calls the old sysv init.d script. However,
+the network Dracut module doesn't include neither this service
+nor the network-scripts configuration. With CentOS 7/Fedora 27/28
+the default network configuration uses NetworkManager which only
+uses the `ifcfg-*` files under `/etc/sysconfig/network-scripts`.
+
 
 ## Hardware Alternatives
 
@@ -245,6 +267,7 @@ though. Also, they use Dropbear and Tinyssh as ssh daemon.
 
 - Fedora 28
 - Fedora 27
+- CentOS 7
 
 [arch]: https://wiki.archlinux.org/index.php/Dm-crypt/Specialties#Remote_unlocking_.28hooks:_netconf.2C_dropbear.2C_tinyssh.2C_ppp.29
 [bug868421]: https://bugzilla.redhat.com/show_bug.cgi?id=868421
@@ -252,6 +275,7 @@ though. Also, they use Dropbear and Tinyssh as ssh daemon.
 [cryptssh]: https://github.com/dracut-crypt-ssh/dracut-crypt-ssh
 [cryptssh-uwe]: https://github.com/dracut-crypt-ssh/dracut-crypt-ssh/pull/17
 [dracut]: https://dracut.wiki.kernel.org/index.php/Main_Page
+[dracut-cmdline]: http://man7.org/linux/man-pages/man7/dracut.cmdline.7.html
 [dropbear]: https://en.wikipedia.org/wiki/Dropbear_(software)
 [drop25519]: https://github.com/pts/pts-dropbear
 [ifcfg]: https://www.centos.org/docs/5/html/Deployment_Guide-en-US/s1-networkscripts-interfaces.html
