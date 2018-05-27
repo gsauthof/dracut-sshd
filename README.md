@@ -100,36 +100,40 @@ output or via `lsinitrd`. Reboot.
 The space overhead of the [Dracut][dracut] sshd module is
 negligible:
 
-    enabled modules       initramfs size
-    -----------------------------------
-    vanilla               16 MiB
-    +systemd-networkd     17 MiB
-    +network              21 MiB
-    +systemd-networkd     22 MiB
-    +network +sshd
+    enabled modules           initramfs size
+    --------------------------------------
+    vanilla -network -ifcfg   16 MiB
+    +systemd-networkd         17 MiB
+    +systemd-networkd +sshd   19 MiB
+    +network +ifcfg           21 MiB
+    +network +ifcfg +sshd     21 MiB
+    +network +ifcfg +sshd     22 MiB
+    +systemd-networkd
 
-(all numbers from a Fedora 28 system)
+(all numbers from a Fedora 28 system, measuring the compressed
+initramfs size)
 
-Technically, the [`systemd-networkd`][networkd] is sufficient for
-establishing some network connectivity, but including the network
-module results in the inclusion of some extra network commands
-(e.g. `ip`) that may be useful for troubleshooting.  Also,
-depending on both `network` and `systemd-networkd` simplifies
-portability between systems that have network configured either
-via networkd or old-school ifcfg network scripts.
+Technically, the [`systemd-networkd`][networkd] Dracut module is
+sufficient for establishing network connectivity. It even
+includes the `ip` command. Since the network Dracut module is
+included by default (under CentOS 7/Fedora 27/28) via the ifcfg
+Dracut module, it may make sense to explicitly exclude it when
+building the initramfs on a system where networkd is available,
+e.g. via
 
-Since the [initramfs][iramfs] nowadays is actually loaded into a
+    dracut -f -v --omit ifcfg
+
+as this saves a few megabytes.
+
+Since the [initramfs][iramfs] is actually loaded into a
 [tmpfs][tmpfs] that is [freed during switch-root][switchroot] it
 doesn't really pay off to safe a few mega-/kilobytes in the
-initramfs. A few KiBs could be safed via switching from
+initramfs. A few KiBs could be saved via switching from
 [OpenSSH][ossh]'s sshd to something like [Dropbear][dropbear],
-but such a alternative sshd server is likely less well audited
+but such an alternative sshd server is likely less well audited
 for security issues and supports less features (e.g. as of 2018
 [Dropbear doesn't support public authentication with
-ssh-ed25519][drop25519] keys). A few MiBs could be saved via
-removing the network Dracut module dependency at the cost of less
-flexibility in the dracut emergency shell when diagnosing network
-issues.
+ssh-ed25519][drop25519] keys).
 
 Last but not least, in times where even embedded systems feature
 hundreds of megabytes RAM, temporarily occupying a few extra
@@ -205,9 +209,12 @@ also the old-school [ifcfg][ifcg] network scripts system under
 [NetworkManager][nm]. It can be launched via the auto-generated
 `network` service that calls the old sysv init.d script. However,
 the network Dracut module doesn't include neither this service
-nor the network-scripts configuration. With CentOS 7/Fedora 27/28
-the default network configuration uses NetworkManager which only
-uses the `ifcfg-*` files under `/etc/sysconfig/network-scripts`.
+nor the network-scripts configuration (it includes some of the
+scripts but the ifcfg Dracut module autogenerates the
+configuration from the kernel commandline). With CentOS 7/Fedora
+27/28 the default network configuration (in late userspace) uses
+NetworkManager which only uses the `ifcfg-*` files under
+`/etc/sysconfig/network-scripts`.
 
 
 ## Hardware Alternatives
