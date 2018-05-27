@@ -257,6 +257,19 @@ Main differences to dracut-sshd:
 - unlock command still present
 - pull-request evolved via additional commits without cleanup rebases
 
+There is [mk-fg/dracut-crypt-sshd][mkfg] which was marked
+deprecated in 2016 in favour of the above dracut-crypt-ssh. It
+uses Dropbear and some console hacks instead of
+`systemd-tty-ask-password-agent`.
+[mdcurtis/dracut-earlyssh][mdcurtis] is a fork
+mk-fg/dracut-crypt-sshd. The main difference is that it also
+suppports RHEL 6 (which features a quite different version of
+dracut). [xenoson/dracut-earlyssh][xenoson] is a fork of
+mdcurtis/dracut-earlyssh. It has RHEL 6 support removed and some
+questionable helpers removed. It creates a systemd unit file for
+Dropbear although it still explicitly starts/stops it via hook
+files instead of making use of the systemd dependency features.
+
 [Clevis][clevis], an automatic decryption framework, has some
 [LUKS][luks] unlocking and Dracut support. Looking at its documentation,
 when it comes to automatic LUKS unlocking, the LUKS passphrase is
@@ -267,6 +280,8 @@ The [ArchWiki dm-crypt page][arch] lists two initramfs hooks for
 remote access.  Both don't use [Dracut][dracut] nor systemd,
 though. Also, they use Dropbear and Tinyssh as ssh daemon.
 
+Related ticket: [Bug 524727 - Dracut + encrypted root + networking (2009)][bug524727]
+
 ## Tested Environments
 
 - Fedora 28
@@ -274,6 +289,7 @@ though. Also, they use Dropbear and Tinyssh as ssh daemon.
 - CentOS 7
 
 [arch]: https://wiki.archlinux.org/index.php/Dm-crypt/Specialties#Remote_unlocking_.28hooks:_netconf.2C_dropbear.2C_tinyssh.2C_ppp.29
+[bug524727]: https://bugzilla.redhat.com/show_bug.cgi?id=524727
 [bug868421]: https://bugzilla.redhat.com/show_bug.cgi?id=868421
 [clevis]: https://github.com/latchset/clevis
 [cryptssh]: https://github.com/dracut-crypt-ssh/dracut-crypt-ssh
@@ -287,6 +303,9 @@ though. Also, they use Dropbear and Tinyssh as ssh daemon.
 [kvm]: https://en.wikipedia.org/wiki/KVM_switch#Remote_KVM_devices
 [luks]: https://gitlab.com/cryptsetup/cryptsetup
 [mitm]: https://en.wikipedia.org/wiki/Man-in-the-middle_attack
+[mkfg]: https://github.com/mk-fg/dracut-crypt-sshd
+[mdcurtis]: https://github.com/mdcurtis/dracut-earlyssh
+[xenoson]: https://github.com/xenoson/dracut-earlyssh
 [networkd]: https://wiki.archlinux.org/index.php/systemd-networkd
 [nm]: https://wiki.archlinux.org/index.php/NetworkManager
 [ossh]: https://en.wikipedia.org/wiki/OpenSSH
