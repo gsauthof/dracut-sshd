@@ -210,9 +210,10 @@ also the old-school [ifcfg][ifcg] network scripts system under
 `network` service that calls the old sysv init.d script. However,
 the network Dracut module doesn't include neither this service
 nor the network-scripts configuration (it includes some of the
-scripts but the ifcfg Dracut module autogenerates the
-configuration from the kernel commandline). With CentOS 7/Fedora
-27/28 the default network configuration (in late userspace) uses
+scripts but the Dracut modules auto-generate the configuration
+during early userspace boot based on the kernel
+commandline/detected hardware). With CentOS 7/Fedora 27/28 the
+default network configuration (in late userspace) uses
 NetworkManager which only uses the `ifcfg-*` files under
 `/etc/sysconfig/network-scripts`.
 
