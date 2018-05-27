@@ -23,6 +23,9 @@ unlocking is then as simple as:
 That means under normal circumstances the completion of all
 password prompts automatically resumes the boot process.
 
+The command `systemd-tty-ask-password-agent --list` prints an overview
+over all pending password prompts.
+
 ## Example: Emergency Shell
 
 The start of the [Dracut][dracut] emergency shell can be
@@ -37,6 +40,7 @@ Example session:
     $ ssh headless.example.org
     -sh-4.4# export TERM=vt220
     -sh-4.4# export SYSTEMD=FRMXK
+    -sh-4.4# export LC_ALL=C
     -sh-4.4# less /run/initramfs/rdsosreport.txt
     -sh-4.4# journalctl -e
     -sh-4.4# systemctl status
