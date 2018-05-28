@@ -48,9 +48,12 @@ Example session:
 
 After fixing potential issues the emergency shell can be terminated to resume the boot:
 
-    switch_root:/root# systemctl kill dracut-emergency.service
+    switch_root:/root# systemctl stop dracut-emergency.service
     switch_root:/root# Connection to 203.0.113.23 closed by remote host.
     Connection to 203.0.113.23 closed.
+
+Alternatively, one can send a signal to the emergency service, e.g.
+with `systemctl kill ...` or `systemctl kill --signal=... ...`.
 
 ## Install
 
