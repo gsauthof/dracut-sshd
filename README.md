@@ -186,6 +186,23 @@ situations [`systemd-tty-ask-password-agent`][pwagent] should
 still work.  See also Section 'Example: Emergency Shell' on how
 to resume the boot process then.
 
+A simple way to trigger the timeout is to enter the wrong
+password 3 times when unlocking a LUKS volume. Under Fedora 28,
+the timeout is then 2 minutes or so long, i.e. the emergency
+shell is then started after 2 minutes, by default, even without
+explicitly adding `rd.shell` to the kernel command line. One can
+recover from such a situation with e.g.:
+
+    # systemctl restart 'systemd-cryptsetup@*'
+
+Another example for the emergency shell getting started is that
+a device that is necessary for mounting the root filesystem
+simply isn't attached - or the UUIDs specified on the kernel
+command line don't match. After inspecting the situation with
+`systemctl status ...`, `journalctl -e`, etc. one can
+regenerate some config and restart the appropriate services in a
+similar fashion.
+
 ## Network
 
 An alternative to the [networkd][networkd] configuration is to
@@ -215,7 +232,7 @@ the network Dracut module doesn't include neither this service
 nor the network-scripts configuration (it includes some of the
 scripts but the Dracut modules auto-generate the configuration
 during early userspace boot based on the kernel
-commandline/detected hardware). With CentOS 7/Fedora 27/28 the
+command line/detected hardware). With CentOS 7/Fedora 27/28 the
 default network configuration (in late userspace) uses
 NetworkManager which only uses the `ifcfg-*` files under
 `/etc/sysconfig/network-scripts`.
