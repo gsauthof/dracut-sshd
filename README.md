@@ -155,8 +155,8 @@ in comparison with a system whose root filesystem is unencrypted:
   by booting the machine from a Live stick) then she is also able
   to access all host keys on a unencrypted root filesystem
 
-That said, if the `/etc/ssh/dracut_ssh_host_ed25519_key{,.pub}`
-files are present then those are included, instead.
+That said, if `/etc/ssh/dracut_*key{,.pub}` files are present
+then those are included as host keys.
 
 As always, it depends on your threat model, whether it makes
 sense to use an extra host key for the initramfs or not. Using an

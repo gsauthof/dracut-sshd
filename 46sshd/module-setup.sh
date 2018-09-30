@@ -25,23 +25,6 @@ depends() {
 
 # called by dracut
 install() {
-    local ssh_host_key authorized_keys
-    if [ -f /etc/ssh/dracut_ssh_host_ed25519_key ]; then
-        ssh_host_key=/etc/ssh/dracut_ssh_host_ed25519_key
-    else
-        ssh_host_key=/etc/ssh/ssh_host_ed25519_key
-    fi
-    authorized_keys=/root/.ssh/authorized_keys
-
-    inst_simple "$ssh_host_key".pub /etc/ssh/ssh_host_ed25519_key.pub
-    /usr/bin/install -m 600 "$ssh_host_key" \
-            "$initdir/etc/ssh/ssh_host_ed25519_key"
-
-    mkdir -p -m 700 "$initdir/root/.ssh"
-    chmod 700 "$initdir/root"
-    /usr/bin/install -m 600 "$authorized_keys" \
-            "$initdir/root/.ssh/authorized_keys"
-
     inst_multiple /usr/sbin/sshd \
         /etc/sysconfig/sshd
     # First entry for Fedora 28, second for Fedora 27
@@ -49,6 +32,29 @@ install() {
             /etc/crypto-policies/back-ends/openssh-server.config
     inst_simple "${moddir}/sshd.service" "$systemdsystemunitdir/sshd.service"
     inst_simple "${moddir}/sshd_config" /etc/ssh/sshd_config
+
+    local ssh_host_keys ssh_host_key authorized_keys
+    # check for specific keys to include in dracut initrd
+    local old_ng=$(shopt -p nullglob)
+    shopt -s nullglob
+    ssh_host_keys=(/etc/ssh/dracut_*key)
+    if [ ${#ssh_host_keys[*]} = 0 ]; then
+        echo "No dracut specific ssh keys found. Using host ssh keys."
+        ssh_host_keys=(/etc/ssh/ssh_host_*key)
+    fi
+    $old_ng
+    for ssh_host_key in "${ssh_host_keys[@]}"; do
+        inst_simple "$ssh_host_key".pub "$ssh_host_key".pub
+        /usr/bin/install -m 600 "$ssh_host_key" \
+                "${initdir}$ssh_host_key"
+        echo "HostKey $ssh_host_key" >> "$initdir/etc/ssh/sshd_config"
+    done
+
+    authorized_keys=/root/.ssh/authorized_keys
+    mkdir -p -m 700 "$initdir/root/.ssh"
+    chmod 700 "$initdir/root"
+    /usr/bin/install -m 600 "$authorized_keys" \
+            "$initdir/root/.ssh/authorized_keys"
 
     grep '^sshd:' /etc/passwd >> "$initdir/etc/passwd"
     grep '^sshd:' /etc/group  >> "$initdir/etc/group"
