@@ -78,7 +78,7 @@ Create a non-[NetworkManager][nm] network config, e.g. via
 
     $ cat /etc/systemd/network/20-wired.network 
     [Match]
-    Name=ens3
+    Name=en*
 
     [Network]
     DHCP=ipv4
