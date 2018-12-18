@@ -5,10 +5,21 @@ DefaultDependencies=no
 Before=cryptsetup.target
 
 [Service]
+# With `Type=notify` the sshd service is started in a reliable
+# and robust way but it requires an sshd with systemd support.
+# Fedora/RHEL/CentOS/Debian/Ubuntu provide such an sshd.
+#
+# On distributions such as Gentoo, sshd doesn't come with
+# systemd support, thus, one has to set `Type=simple` there.
 Type=notify
+
 EnvironmentFile=-/etc/crypto-policies/back-ends/opensshserver.config
 EnvironmentFile=-/etc/sysconfig/sshd
+
+# Start command requires the `-e` option if and only if `Type=simple`
+# is configured, see above.
 ExecStart=/usr/sbin/sshd -D $OPTIONS $CRYPTO_POLICY
+
 ExecReload=/bin/kill -HUP $MAINPID
 KillMode=process
 Restart=on-failure

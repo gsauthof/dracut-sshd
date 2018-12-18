@@ -61,6 +61,15 @@ Copy the `46sshd` subdirectory to the [Dracut][dracut] module directory:
 
     # cp -ri 46sshd /usr/lib/dracut/modules.d
 
+With a sshd that lacks systemd support (e.g. under Gentoo), one
+has to adjust the systemd service file:
+
+    # echo 'Skip this sed on Fedora/RHEL/CentOS/Debian/Ubuntu/...!'
+    # sed -e 's/^Type=notify/Type=simple/' \
+          -e 's@^\(ExecStart=/usr/sbin/sshd\) -D@\1 -e -D@' \
+          -i \
+          /usr/lib/dracut/modules.d/46sshd/sshd.service
+
 It's enabled, by default - unless the Dracut network module is missing. Thus:
 
     # dnf install -y dracut-network
