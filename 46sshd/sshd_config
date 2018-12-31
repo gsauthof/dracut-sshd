@@ -1,4 +1,3 @@
-HostKey /etc/ssh/ssh_host_ed25519_key
 SyslogFacility AUTHPRIV
 PermitRootLogin yes
 AuthorizedKeysFile	.ssh/authorized_keys

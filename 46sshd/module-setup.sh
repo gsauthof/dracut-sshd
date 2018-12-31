@@ -25,17 +25,21 @@ depends() {
 
 # called by dracut
 install() {
-    local ssh_host_key authorized_keys
-    if [ -f /etc/ssh/dracut_ssh_host_ed25519_key ]; then
-        ssh_host_key=/etc/ssh/dracut_ssh_host_ed25519_key
-    else
-        ssh_host_key=/etc/ssh/ssh_host_ed25519_key
+    local key_prefix key_type ssh_host_key authorized_keys
+    key_prefix=
+    if [ "$(find /etc/ssh -maxdepth 1 -name 'dracut_ssh_host_*_key')" ]; then
+        key_prefix=dracut_
     fi
-    authorized_keys=/root/.ssh/authorized_keys
+    for key_type in dsa ecdsa ed25519 rsa; do
+        ssh_host_key=/etc/ssh/"$key_prefix"ssh_host_"$key_type"_key
+        if [ -f "$ssh_host_key" ]; then
+            inst_simple "$ssh_host_key".pub /etc/ssh/ssh_host_"$key_type"_key.pub
+            /usr/bin/install -m 600 "$ssh_host_key" \
+                    "$initdir/etc/ssh/ssh_host_${key_type}_key"
+        fi
+    done
 
-    inst_simple "$ssh_host_key".pub /etc/ssh/ssh_host_ed25519_key.pub
-    /usr/bin/install -m 600 "$ssh_host_key" \
-            "$initdir/etc/ssh/ssh_host_ed25519_key"
+    authorized_keys=/root/.ssh/authorized_keys
 
     mkdir -p -m 700 "$initdir/root/.ssh"
     chmod 700 "$initdir/root"

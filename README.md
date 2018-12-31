@@ -99,6 +99,10 @@ establishing network connectivity. However, the author of this
 README strongly recommends to use Networkd instead of NetworkManager
 on servers and server-like systems.
 
+If the above example is sufficient you can install it via:
+
+    # cp example/20-wired.network  /etc/systemd/network
+
 Finally regenerate the initramfs:
 
     # dracut -f -v
@@ -154,7 +158,7 @@ KiBs/MiBs before switch root has no dramatic impact.
 ## Host Keys
 
 By default, this module includes the system's
-`/etc/ssh/ssh_host_ed25519_key` private host key into the
+`/etc/ssh/ssh_host_*_key` private host keys into the
 [initramfs][iramfs]. Note that this doesn't decrease the security
 in comparison with a system whose root filesystem is unencrypted:
 
@@ -164,7 +168,7 @@ in comparison with a system whose root filesystem is unencrypted:
   by booting the machine from a Live stick) then she is also able
   to access all host keys on a unencrypted root filesystem
 
-That said, if the `/etc/ssh/dracut_ssh_host_ed25519_key{,.pub}`
+That said, if `/etc/ssh/dracut_ssh_host_*_key{,.pub}`
 files are present then those are included, instead.
 
 As always, it depends on your threat model, whether it makes
