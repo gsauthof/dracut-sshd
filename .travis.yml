@@ -1,0 +1,33 @@
+
+dist: xenial
+
+sudo: required
+
+language: python
+
+os: linux
+  addons:
+    apt:
+      packages:
+        - btrfs-tools
+        - cryptsetup
+        - cryptsetup-bin
+        - curl
+        # pip3 install it because we need a more recent version
+        #- python3-pexpect
+        - qemu-kvm
+        - qemu-system-x86
+        - zstd 
+
+matrix:
+  include:
+      - name: 'Fedora 29'
+        env:
+          dracut_sshd_dist=f29
+
+before_install: ./ci/travis.sh before_install
+
+install:        ./ci/travis.sh install
+
+script:         ./ci/travis.sh script
+
