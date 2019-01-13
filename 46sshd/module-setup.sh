@@ -65,6 +65,10 @@ install() {
     # include those files
     inst_multiple -o /etc/systemd/network/*
 
+    # Add command to unlock luks volumes to bash history for easier use
+    echo "systemd-tty-ask-password-agent" >> "$initdir/root/.bash_history"
+    chmod 600 "$initdir/root/.bash_history"
+
     return 0
 }
 
