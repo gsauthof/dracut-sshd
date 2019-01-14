@@ -28,10 +28,15 @@ import ctlseq
 import run_vm
 import unlock
 
-login_timeout = 50
-dracut_timeout = 200
-shutdown_timeout = 50
+# times 4 for non-kvm environments
+login_timeout = 4 * 50
+dracut_timeout = 4 * 200
+shutdown_timeout = 4 * 50
 
+boot_wait = 5
+# for non-kvm environments
+if os.environ.get('TRAVIS', 'false') == 'true':
+    boot_wait = 4 * boot_wait
 
 pw = open('pw').read().strip()
 qemu = 'qemu-system-x86_64'
@@ -134,7 +139,7 @@ def test_unlock(m, extra_keys=False, check_host_key_fail=False, host_key_algo='e
     key_filename = '{}/{}'.format(key_dir, client_key)
     with known_horsts(host_key_filename) as (known_filename, host_key_algo), \
             known_horsts(other_host_key_filename) as (other_known_filename, _):
-        time.sleep(5)
+        time.sleep(boot_wait)
 
         if check_host_key_fail:
             connection_failed = False
@@ -149,6 +154,7 @@ def test_unlock(m, extra_keys=False, check_host_key_fail=False, host_key_algo='e
         assert r == 255
 
         m.expect('login:', timeout=login_timeout)
+        time.sleep(boot_wait)
 
         if check_host_key_fail:
             connection_failed = False

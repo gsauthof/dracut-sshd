@@ -27,6 +27,12 @@ function remove_pkgs
     dnf -y remove $expendable_pkgs
 }
 
+function add_pkgs
+{
+    # XXX after next base image creation
+    dnf -y install dracut-network
+}
+
 function remove_locales
 {
     localedef --list-archive | grep  '^\(en_US\|en_US.utf8\)$' -v \
@@ -71,6 +77,7 @@ function post_pkg_cleanup
 
 
 remove_pkgs
+add_pkgs
 remove_locales
 enable_networkd
 volatilize_logs

@@ -14,7 +14,7 @@
 import re
 import sys
 
-noctl_exp = re.compile(b'\33c|\33\[[0-9;?]+[lmHJ]|\33\]0;')
+noctl_exp = re.compile(b'\33c|\33\[[0-9;?]+[lmHJ]|\33\]0;|\33\[K')
 multinl_exp = re.compile(b'\n{2,}')
 
 class Control_Filter:

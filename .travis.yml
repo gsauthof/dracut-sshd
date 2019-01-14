@@ -5,25 +5,30 @@ sudo: required
 
 language: python
 
+python: '3.7'
+
 os: linux
-  addons:
+
+addons:
     apt:
-      packages:
-        - btrfs-tools
-        - cryptsetup
-        - cryptsetup-bin
-        - curl
-        # pip3 install it because we need a more recent version
-        #- python3-pexpect
-        - qemu-kvm
-        - qemu-system-x86
-        - zstd 
+        packages:
+            - btrfs-tools
+            - cpu-checker # provides kvm-ok
+            - cryptsetup
+            - cryptsetup-bin
+            - curl
+            # pip3 install it because we need a more recent version
+            #- python3-pexpect
+            - qemu-utils
+            - qemu-kvm
+            - qemu-system-x86
+            - zstd
 
 matrix:
   include:
       - name: 'Fedora 29'
         env:
-          dracut_sshd_dist=f29
+            dracut_sshd_dist=f29
 
 before_install: ./ci/travis.sh before_install
 

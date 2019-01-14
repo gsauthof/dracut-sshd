@@ -35,7 +35,6 @@ fi
 
 ssh -p $port "${ssh_flags[@]}" root@"$host" <<EOF
 set -x
-dnf install -y dracut-network
 dracut -f -v
 shutdown -h now
 EOF

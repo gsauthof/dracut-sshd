@@ -52,16 +52,25 @@ function travis_before_install
     # we don't apt-get install it because that version is too old, i.e.
     # it doesn't properly raise pexpect.pxssh.ExceptionPxssh on
     # strict host key checking errors.
-    pip3 install --user pexpect
+    local pip_flags
+    pip_flags=
+    if [ "${TRAVIS:-false}" != true ]; then
+        pip_flags="--user"
+    fi
+    pip3 install $pip_flags pexpect
 
     # before we download anything check if there is virualization available
     echo "Verifying that (nested) virtualization is available ..."
-    kvm-ok
-    grep 'vmx\|svm' /proc/cpuinfo
-    ls -l /dev/kvm
+    # As of 2019-01, travis-ci doesn't support nested virtualization
+    # https://travis-ci.community/t/add-kvm-support/1406/2
+    kvm-ok || true
+    grep 'vmx\|svm' /proc/cpuinfo || true
+    ls -l /dev/kvm || true
     echo "Verifying that (nested) virtualization is available ... done"
 
-    sudo chmod 666 /dev/kvm
+    if [ -e /dev/kvm ]; then
+        sudo chmod 666 /dev/kvm
+    fi
 }
 
 function travis_install
@@ -95,7 +104,7 @@ travis_"$method"
 echo done
 
 # ubuntu packages:
-# btrfs-tools cryptsetup cryptsetup-bin curl qemu-kvm qemu-system-x86 zstd 
+# btrfs-tools cpu-checker cryptsetup cryptsetup-bin curl qemu-img qemu-kvm qemu-system-x86 zstd
 #
 # extra packages outside travis env:
 # python3-pip

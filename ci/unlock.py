@@ -11,6 +11,9 @@ import sys
 
 import ctlseq
 
+# times 3, 4 for non-kvm environments
+general_timeout = 3 * 10
+eof_timeout = 4 * 10
 
 def ssh_connect(key_filename, known_filename, host_key_algo,
         hostname='localhost', port='10022', user='root'):
@@ -22,7 +25,7 @@ def ssh_connect(key_filename, known_filename, host_key_algo,
         'IdentitiesOnly': 'yes',
         'IdentityFile': key_filename,
         },
-        timeout=10)
+        timeout=general_timeout)
     #s.logfile = sys.stdout.buffer
     s.logfile = ctlseq.Control_Filter()
     s.login(hostname, user, port=port)
@@ -37,7 +40,7 @@ def unlock(pw, key_filename, known_filename, host_key_algo,
     s.expect('Please enter passphrase for disk .*:')
     s.sendline(pw)
     s.prompt()
-    s.expect(pexpect.EOF)
+    s.expect(pexpect.EOF, timeout=eof_timeout)
     s.close()
     return s.exitstatus
 

@@ -8,13 +8,16 @@
 
 import argparse
 from distutils.version import LooseVersion
+import os
 import pexpect
 import sys
 
 import ctlseq
 
-unlock_timeout = 50
-login_timeout = 50
+# times 3 for non-kvm environments
+unlock_timeout = 3 * 50
+login_timeout = 3 * 50
+
 long_timeout = 10 * 60
 
 def mk_arg_parser():
@@ -55,8 +58,14 @@ def start(qemu, image, unlock, pw=None):
                 '-blockdev', 'file,node-name=f1,filename=' + image,
                 '-blockdev', 'qcow2,node-name=q1,file=f1',
                 '-device', 'ide-hd,drive=q1', ]
+    # as of 2018-01, travis-ci doesn't suppport nested virtualization:
+    # https://travis-ci.community/t/add-kvm-support/1406
+    if os.environ.get('TRAVIS', 'false') == 'true':
+        kvm_flags = []
+    else:
+        kvm_flags = [ '-enable-kvm' ]
     s = pexpect.spawn(qemu,
-            [ '-nographic', '-enable-kvm', '-m', '2G',
+            kvm_flags + [ '-nographic', '-m', '2G',
                 # otherwise the sshd startup easily fails due to low entropy
                 '-device', 'virtio-rng-pci', ] + drive_flags + [
                 '-netdev', 'user,hostfwd=tcp::10022-:22,id=n1',
