@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/gsauthof/dracut-sshd.svg?branch=master)](https://travis-ci.org/gsauthof/dracut-sshd)
+
 This [Dracut][dracut] module (dracut-sshd) integrates the
 [OpenSSH][ossh] sshd into the [initramfs][iramfs]. It allows for
 remote unlocking of a fully encrypted root filesystem and remote
