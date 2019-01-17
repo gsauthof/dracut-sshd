@@ -29,6 +29,10 @@ matrix:
       - name: 'Fedora 29'
         env:
             dracut_sshd_dist=f29
+      - name: 'Fedora 29 extra'
+        env:
+            dracut_sshd_dist=f29
+            dracut_sshd_suite=extra
 
 before_install: ./ci/travis.sh before_install
 

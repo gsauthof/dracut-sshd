@@ -187,8 +187,10 @@ def test_system(extra_keys):
     log.info(msg + ' ... done')
 
 def main():
+    suite = os.environ.get('dracut_sshd_suite', 'all')
     for extra_keys in ( False, True ):
-        test_system(extra_keys)
+        if suite == 'all' or (suite == 'extra') == extra_keys:
+            test_system(extra_keys)
 
 if __name__ == '__main__':
     setup_logging()
