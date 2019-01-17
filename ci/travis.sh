@@ -17,7 +17,7 @@ dist=${dracut_sshd_dist:-f29}
 url_base=https://georg.so/pub/travisci/dracut-sshd/"$dist"
 
 root_img=root-only.qcow2.zst
-prefix_img=prefix.img.zst
+prefix_img=prefix.qcow2.zst
 key_arch=key.tar.gz
 
 function download_artefacts
