@@ -17,7 +17,7 @@ luks_name=tmp
 zlevel=19
 
 root_img=root-only.qcow2
-prefix_img=prefix.img
+prefix_img=prefix.qcow2
 luks_uuid_out=luks-uuid
 
 [ -e /mnt/$luks_name ] || {
@@ -56,9 +56,7 @@ fi
 echo $luks_uuid > $luks_uuid_out
 
 prefix_blocks=$(sfdisk -d $nbd_input | grep "$nbd_input"p4 | tr -d , | awk '{print $4}')
-
-# dd default bs=512
-dd if=$nbd_input bs=512 count=$prefix_blocks | zstd -$zlevel > "$prefix_img".zst
+echo $prefix_blocks
 
 < $pw tr -d '\n' | cryptsetup luksOpen --key-file - "$nbd_input"p4 $luks_name
 
@@ -68,22 +66,30 @@ qemu-img create -f qcow2 $root_img $root_size
 
 qemu-nbd --connect $nbd_root $root_img
 
+root_uuid=$(blkid /dev/mapper/$luks_name -o value | head -n 1)
+btrfstune -f -S 1 /dev/mapper/$luks_name
+
+# creating a btrfs sprout
+# cf. https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/message/CHER5RJ65ZUMIAIEOHLNB2543RRIXP2Y/
 mount -o noatime /dev/mapper/$luks_name /mnt/$luks_name
-
-# after this, the fs on the luks volume is gone
-# perhaps there is (was?) a better way:
-# https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/thread/BJF3SLPPIXJER7FHK3HXYBL7TLK5T2AF/#255CEALF5UIXIIRGYBMEPWPORPQWJ4AW
-btrfs replace start -B /dev/mapper/$luks_name $nbd_root /mnt/$luks_name
-
+btrfs device add $nbd_root /mnt/$luks_name
+mount -o remount,rw /mnt/$luks_name
+btrfs device remove /dev/mapper/$luks_name /mnt/$luks_name
 umount /mnt/$luks_name
+cryptsetup luksClose $luks_name
+btrfstune -f -U $root_uuid -S 1 $nbd_root
 
 qemu-nbd --disconnect $nbd_root
+qemu-nbd --disconnect $nbd_input
+
+qemu-img dd if=$input_img of=$prefix_img -O qcow2 bs=512 count=$prefix_blocks
+qemu-img resize $prefix_img 4G
+
+rm -f "$prefix_img".zst
+zstd -q -$zlevel $prefix_img
 
 rm -f "$root_img".zst
 zstd -q -$zlevel $root_img
-
-cryptsetup luksClose $luks_name
-qemu-nbd --disconnect $nbd_input
 
 rm "$input_img"
 

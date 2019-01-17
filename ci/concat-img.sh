@@ -12,7 +12,7 @@ PS4='+${SECONDS}s '
 pw=key/pw
 root_img_src=root-only.qcow2.zst
 root_img=${root_img_src%.zst}
-prefix_img=prefix.img.zst
+prefix_img_src=prefix.qcow2.zst
 luks_uuid_out=key/luks-uuid
 
 nbd_root=/dev/nbd0
@@ -40,28 +40,33 @@ for x in $nbd_root $nbd_guest; do
         exit 1
     fi
 done
-for x in $root_img_src $prefix_img $luks_uuid_out $pw ; do
+for x in $root_img_src $prefix_img_src $luks_uuid_out $pw ; do
     [ -f $x ] || {
         echo "File $x is missing" >&2
         exit 1
     }
 done
 
-rm -f $root_img
-zstd -q -d -c $root_img_src > $root_img
 rm -f $guest_img
-qemu-img create -f qcow2 $guest_img 4G
+# advantage of -o: sparse file creation
+zstd -q -d $prefix_img_src -o $guest_img
+rm -f $root_img
+zstd -q -d $root_img_src -o $root_img
+
 qemu-nbd  --connect  $nbd_guest $guest_img
-zstdcat $prefix_img | dd of=$nbd_guest conv=sparse
 partx -uv $nbd_guest
 < pw tr -d '\n' | cryptsetup luksFormat "$nbd_guest"p4 - --uuid $luks_uuid 
 < pw tr -d '\n' | cryptsetup luksOpen --key-file - "$nbd_guest"p4 $luks_name
 qemu-nbd  --connect  $nbd_root $root_img
+root_uuid=$(blkid $nbd_root -o value | head -n 1)
 mount -o noatime $nbd_root /mnt/$luks_name
-btrfs replace start -B $nbd_root /dev/mapper/$luks_name /mnt/$luks_name
+btrfs device add /dev/mapper/$luks_name /mnt/$luks_name
+mount -o remount,rw /mnt/$luks_name
+btrfs device remove $nbd_root /mnt/$luks_name
 umount /mnt/$luks_name
-cryptsetup luksClose $luks_name
 qemu-nbd --disconnect $nbd_root
+btrfstune -f -U $root_uuid /dev/mapper/$luks_name
+cryptsetup luksClose $luks_name
 qemu-nbd --disconnect $nbd_guest
 rm $root_img
 
