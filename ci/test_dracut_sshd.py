@@ -38,7 +38,7 @@ boot_wait = 5
 if os.environ.get('TRAVIS', 'false') == 'true':
     boot_wait = 4 * boot_wait
 
-pw = open('pw').read().strip()
+pw = open('key/pw').read().strip()
 qemu = 'qemu-system-x86_64'
 image = 'guest.qcow2'
 

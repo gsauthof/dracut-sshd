@@ -14,7 +14,8 @@ origin="$(cd "$( dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
 ci_dir=$origin
 
 dist=${dracut_sshd_dist:-f29}
-url_base=https://georg.so/pub/travisci/dracut-sshd/"$dist"
+url_prefix=${dracut_url_prefix:-https://georg.so/pub/travisci/dracut-sshd}
+url_base="$url_prefix/$dist"
 
 root_img=root-only.qcow2.zst
 prefix_img=prefix.qcow2.zst
@@ -25,13 +26,13 @@ function download_artefacts
     curl --proto-redir =https -L --silent --show-error --fail \
          -O "$url_base/$root_img" \
          -O "$url_base/$prefix_img" \
-         -O "$url_base/$key_arch"
+         -O "$url_base/$key_arch" \
+         -O "$url_base/luks-uuid"
 }
 
 function unpack
 {
     tar xfv "$key_arch"
-    cp key/{pw,known_horsts} .
     sudo mkdir -p /mnt/tmp
     sudo modprobe nbd
 
