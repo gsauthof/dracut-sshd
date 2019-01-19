@@ -1,0 +1,75 @@
+{{! kickstart template file, generate the real config with e.g.
+
+    $ mustache centos7.yaml centos7-ks.cfg.mustache > centos7-ks.cfg
+}}
+
+# use text-installer
+#text
+# or
+cmdline
+
+# Use network installation
+url --mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=os
+#repo --name="centos-updates" --mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=updates
+repo --name=updates
+
+# Don't run the Setup Agent on first boot
+firstboot --disable
+
+keyboard --vckeymap=us --xlayouts='us'
+lang en_US.UTF-8
+timezone Europe/Berlin --isUtc --nontp
+
+# Network information
+network  --bootproto=dhcp --device=eth0 --ipv6=auto --activate
+network  --hostname=localhost.localdomain
+
+auth --enableshadow --passalgo=sha512
+rootpw {{pw}}
+sshkey --username=root "{{authorized_key}}"
+user --groups=wheel --name=juser --password={{pw}}
+
+services --disabled="chronyd"
+
+ignoredisk --only-use={{sda}}
+bootloader --location=mbr --boot-drive={{sda}} --append="console=tty0 console=ttyS0,115200"
+clearpart --all --initlabel --drives={{sda}}
+# Partitioning
+# --size=1024
+part /boot --fstype="xfs" --ondisk={{sda}} --recommended
+# --size=3071
+part / --fstype="xfs" --ondisk={{sda}} --grow --encrypted --passphrase {{pw}}
+
+
+#halt
+poweroff
+
+
+%packages
+@^minimal
+@core
+dracut-network
+-*firmware
+-btrfs-progs
+-chrony
+-iprutils
+-kexec-tools
+-microcode_ctl
+-NetworkManager*
+-plymouth
+-postfix
+-qemu-guest-agent
+-teamd
+-tuned
+-wpa_supplicant
+%end
+
+%addon com_redhat_kdump --disable --reserve-mb='auto'
+
+%end
+
+%anaconda
+pwpolicy root --minlen=6 --minquality=1 --notstrict --nochanges --notempty
+pwpolicy user --minlen=6 --minquality=1 --notstrict --nochanges --emptyok
+pwpolicy luks --minlen=6 --minquality=1 --notstrict --nochanges --notempty
+%end
