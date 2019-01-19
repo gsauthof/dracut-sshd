@@ -13,7 +13,7 @@ with_extra_keys=${1:-n}
 
 host=localhost
 port=10022
-known_hosts=known_horsts
+known_hosts=key/known_horsts
 key=key/dracut-ssh-travis-ci-insecure-ed25519
 
 ssh_flags=(
@@ -33,8 +33,14 @@ else
         rm -f /etc/ssh/'dracut_ssh_host_*_key*' 
 fi
 
-ssh -p $port "${ssh_flags[@]}" root@"$host" <<EOF
+ssh -p $port "${ssh_flags[@]}" root@"$host" <<'EOF'
 set -x
+if [ -f /usr/lib/systemd/systemd-networkd ]; then
+    :
+else
+    sed -i 's/^\(GRUB_CMDLINE_LINUX=\)"\([^"]\+\)"/\1"\2 rd.neednet=1 ip=dhcp"/' /etc/default/grub
+    grub2-mkconfig -o  /etc/grub2.cfg
+fi
 dracut -f -v
 shutdown -h now
 EOF
