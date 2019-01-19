@@ -8,8 +8,8 @@ set -eux
 
 PS4='+${SECONDS}s '
 
-pw=pw
-input_img_src=${1:-disk.qcow2}
+pw=key/pw
+input_img_src=${1:-guest.qcow2}
 input_img="$input_img_src".tmp
 nbd_input=/dev/nbd0
 nbd_root=/dev/nbd1
@@ -41,13 +41,59 @@ for x in $input_img_src $pw ; do
     }
 done
 
+function dump_btrfs
+{
+    rm -f $root_img
+    qemu-img create -f qcow2 $root_img $root_size
+
+    qemu-nbd --connect $nbd_root $root_img
+
+    btrfstune -f -S 1 /dev/mapper/$luks_name
+
+    # creating a btrfs sprout
+    # cf. https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/message/CHER5RJ65ZUMIAIEOHLNB2543RRIXP2Y/
+    mount -o noatime /dev/mapper/$luks_name /mnt/$luks_name
+    btrfs device add $nbd_root /mnt/$luks_name
+    mount -o remount,rw /mnt/$luks_name
+    btrfs device remove /dev/mapper/$luks_name /mnt/$luks_name
+    umount /mnt/$luks_name
+    cryptsetup luksClose $luks_name
+    btrfstune -f -U $root_uuid -S 1 $nbd_root
+
+    qemu-nbd --disconnect $nbd_root
+}
+
+function dump_xfs
+{
+    rm -f $root_img
+    qemu-img create -f qcow2 $root_img $root_size
+
+    qemu-nbd --connect $nbd_root $root_img
+
+    xfs_copy /dev/mapper/$luks_name $nbd_root
+    cryptsetup luksClose $luks_name
+
+    xfs_admin -U $root_uuid $nbd_root
+
+    qemu-nbd --disconnect $nbd_root
+}
+
 # we need this because the brfs replace is destructive
 rm -f "$input_img"
 cp --reflink=auto $input_img_src $input_img
 
 qemu-nbd --connect $nbd_input $input_img
 partx -uv $nbd_input
-luks_uuid=$(blkid "$nbd_input"p4 -o value | head -n 1)
+
+part=p
+for i in 4 2; do
+    if [ -e "$nbd_input"p$i ]; then
+        part=p$i
+        break
+    fi
+done
+
+luks_uuid=$(blkid "$nbd_input"$part -o value | head -n 1)
 
 if [ -z "$luks_uuid" ]; then
     echo "Failed to get LUKS UUID" >&2
@@ -55,31 +101,18 @@ if [ -z "$luks_uuid" ]; then
 fi
 echo $luks_uuid > $luks_uuid_out
 
-prefix_blocks=$(sfdisk -d $nbd_input | grep "$nbd_input"p4 | tr -d , | awk '{print $4}')
+prefix_blocks=$(sfdisk -d $nbd_input | grep "$nbd_input"$part | tr -d , | awk '{print $4}')
 echo $prefix_blocks
 
-< $pw tr -d '\n' | cryptsetup luksOpen --key-file - "$nbd_input"p4 $luks_name
+< $pw tr -d '\n' | cryptsetup luksOpen --key-file - "$nbd_input"$part $luks_name
 
-root_size=$(lsblk /dev/mapper/$luks_name -o size --bytes -n -l)
-rm -f $root_img
-qemu-img create -f qcow2 $root_img $root_size
-
-qemu-nbd --connect $nbd_root $root_img
-
+root_type=$(blkid /dev/mapper/$luks_name -o value | tail -n 1)
 root_uuid=$(blkid /dev/mapper/$luks_name -o value | head -n 1)
-btrfstune -f -S 1 /dev/mapper/$luks_name
+root_size=$(lsblk /dev/mapper/$luks_name -o size --bytes -n -l)
 
-# creating a btrfs sprout
-# cf. https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/message/CHER5RJ65ZUMIAIEOHLNB2543RRIXP2Y/
-mount -o noatime /dev/mapper/$luks_name /mnt/$luks_name
-btrfs device add $nbd_root /mnt/$luks_name
-mount -o remount,rw /mnt/$luks_name
-btrfs device remove /dev/mapper/$luks_name /mnt/$luks_name
-umount /mnt/$luks_name
-cryptsetup luksClose $luks_name
-btrfstune -f -U $root_uuid -S 1 $nbd_root
+# also luks-closes $luks_mame
+dump_$root_type
 
-qemu-nbd --disconnect $nbd_root
 qemu-nbd --disconnect $nbd_input
 
 qemu-img dd if=$input_img of=$prefix_img -O qcow2 bs=512 count=$prefix_blocks

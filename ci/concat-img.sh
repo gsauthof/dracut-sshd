@@ -13,7 +13,7 @@ pw=key/pw
 root_img_src=root-only.qcow2.zst
 root_img=${root_img_src%.zst}
 prefix_img_src=prefix.qcow2.zst
-luks_uuid_out=key/luks-uuid
+luks_uuid_out=luks-uuid
 
 nbd_root=/dev/nbd0
 nbd_guest=/dev/nbd1
@@ -47,6 +47,24 @@ for x in $root_img_src $prefix_img_src $luks_uuid_out $pw ; do
     }
 done
 
+function restore_btrfs
+{
+    mount -o noatime $nbd_root /mnt/$luks_name
+    btrfs device add /dev/mapper/$luks_name /mnt/$luks_name
+    mount -o remount,rw /mnt/$luks_name
+    btrfs device remove $nbd_root /mnt/$luks_name
+    umount /mnt/$luks_name
+    qemu-nbd --disconnect $nbd_root
+    btrfstune -f -U $root_uuid /dev/mapper/$luks_name
+}
+
+function restore_xfs
+{
+    xfs_copy $nbd_root /dev/mapper/$luks_name
+    qemu-nbd --disconnect $nbd_root
+    xfs_admin -U $root_uuid /dev/mapper/$luks_name
+}
+
 rm -f $guest_img
 # advantage of -o: sparse file creation
 zstd -q -d $prefix_img_src -o $guest_img
@@ -55,18 +73,27 @@ zstd -q -d $root_img_src -o $root_img
 
 qemu-nbd  --connect  $nbd_guest $guest_img
 partx -uv $nbd_guest
-< pw tr -d '\n' | cryptsetup luksFormat "$nbd_guest"p4 - --uuid $luks_uuid 
-< pw tr -d '\n' | cryptsetup luksOpen --key-file - "$nbd_guest"p4 $luks_name
+
+part=p
+for i in 4 2; do
+    if [ -e "$nbd_guest"p$i ]; then
+        part=p$i
+        break
+    fi
+done
+
+< $pw tr -d '\n' | cryptsetup luksFormat "$nbd_guest"$part - --uuid $luks_uuid
+< $pw tr -d '\n' | cryptsetup luksOpen --key-file - "$nbd_guest"$part $luks_name
+
 qemu-nbd  --connect  $nbd_root $root_img
 root_uuid=$(blkid $nbd_root -o value | head -n 1)
-mount -o noatime $nbd_root /mnt/$luks_name
-btrfs device add /dev/mapper/$luks_name /mnt/$luks_name
-mount -o remount,rw /mnt/$luks_name
-btrfs device remove $nbd_root /mnt/$luks_name
-umount /mnt/$luks_name
-qemu-nbd --disconnect $nbd_root
-btrfstune -f -U $root_uuid /dev/mapper/$luks_name
+root_type=$(blkid $nbd_root -o value | tail -n 1)
+
+# also disconnects $nbd_root
+restore_$root_type
+
 cryptsetup luksClose $luks_name
+
 qemu-nbd --disconnect $nbd_guest
 rm $root_img
 
