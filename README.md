@@ -134,7 +134,8 @@ initramfs size)
 Technically, the [`systemd-networkd`][networkd] Dracut module is
 sufficient for establishing network connectivity. It even
 includes the `ip` command. Since the network Dracut module is
-included by default (under CentOS 7/Fedora 27/28) via the ifcfg
+included by default (under CentOS 7/Fedora 27/28) via the
+[ifcfg][ifcfg]
 Dracut module, it may make sense to explicitly exclude it when
 building the initramfs on a system where networkd is available,
 e.g. via
@@ -232,14 +233,14 @@ early userspace:
     rd.neednet=1 ip=dhcp
 
 They need to be appended to `GRUB_CMDLINE_LINUX=` in
-`/etc/sysconfig/grub` and to be effective the Grub config then
+`/etc/default/grub` and to be effective the Grub config then
 needs to be regenerated:
 
     # grub2-mkconfig -o  /etc/grub2.cfg
     # grub2-mkconfig -o  /etc/grub2-efi.cfg
 
 Note that on distributions like CentOS 7/Fedora 27/28 there is
-also the old-school [ifcfg][ifcg] network scripts system under
+also the old-school [ifcfg][ifcfg] network scripts system under
 `/etc/sysconfig/network-scripts` that can be used instead of
 [NetworkManager][nm]. It can be launched via the auto-generated
 `network` service that calls the old sysv init.d script. However,
