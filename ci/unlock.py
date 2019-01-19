@@ -37,7 +37,7 @@ def unlock(pw, key_filename, known_filename, host_key_algo,
             hostname, port, user)
     #s.prompt() # optional
     s.sendline('systemd-tty-ask-password-agent')
-    s.expect('Please enter passphrase for disk .*:')
+    s.expect('Please enter passphrase for disk .*[:!]')
     s.sendline(pw)
     s.prompt()
     s.expect(pexpect.EOF, timeout=eof_timeout)
@@ -45,9 +45,9 @@ def unlock(pw, key_filename, known_filename, host_key_algo,
     return s.exitstatus
 
 def main():
-    pw = open('pw').read().strip()
+    pw = open('key/pw').read().strip()
     r = unlock(pw, 'key/dracut-ssh-travis-ci-insecure-ed25519',
-            'known_horsts', 'ecdsa-sha2-nistp256')
+            'key/known_horsts', 'ecdsa-sha2-nistp256')
     if r != 255:
         raise RuntimeError('Exit status: {}'.format(r))
 

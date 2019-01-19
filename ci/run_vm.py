@@ -85,7 +85,7 @@ def start(qemu, image, unlock, pw=None):
     #s.expect("Press 'e' to edit the selected item, or 'c' for a command prompt.")
     if i < 2:
         s.sendline('')
-        s.expect('Please enter passphrase for disk.*:', timeout=unlock_timeout)
+        s.expect('Please enter passphrase for disk.*[:!]', timeout=unlock_timeout)
     if unlock:
         s.sendline(pw)
         # is only printed when qemu is running outside of pexpect?!?
@@ -94,7 +94,7 @@ def start(qemu, image, unlock, pw=None):
     return s
 
 def wait_shutdown(s, timeout):
-    s.expect('reboot: Power down', timeout=timeout)
+    s.expect(['reboot: Power down', 'Power down.'], timeout=timeout)
     s.expect(pexpect.EOF)
     s.close()
     return s.exitstatus
