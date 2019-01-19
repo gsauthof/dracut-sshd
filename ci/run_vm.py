@@ -15,8 +15,8 @@ import sys
 import ctlseq
 
 # times 3 for non-kvm environments
-unlock_timeout = 3 * 50
-login_timeout = 3 * 50
+unlock_timeout = 2 * 3 * 50
+login_timeout = 4 * 3 * 50
 
 long_timeout = 10 * 60
 

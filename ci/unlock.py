@@ -13,7 +13,7 @@ import ctlseq
 
 # times 3, 4 for non-kvm environments
 general_timeout = 3 * 10
-eof_timeout = 4 * 10
+eof_timeout = 2 * 4 * 10
 
 def ssh_connect(key_filename, known_filename, host_key_algo,
         hostname='localhost', port='10022', user='root'):

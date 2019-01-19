@@ -30,7 +30,7 @@ import unlock
 
 # times 4 for non-kvm environments
 login_timeout = 4 * 50
-dracut_timeout = 4 * 200
+dracut_timeout = 2 * 4 * 200
 shutdown_timeout = 4 * 50
 
 boot_wait = 5
@@ -77,6 +77,8 @@ def install_module(extra_keys=False):
     msg = '>> Installing module (extra_keys = {}) ...'.format(extra_keys)
     log.info(msg)
     s = run_vm.start(qemu, image, True, pw)
+
+    time.sleep(boot_wait)
 
     ori = origin()
     cmd = ori + '/install-dracut-sshd.sh'

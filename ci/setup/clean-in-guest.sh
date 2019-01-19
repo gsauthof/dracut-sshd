@@ -92,6 +92,15 @@ function volatilize_logs
 
 function post_pkg_cleanup
 {
+    if [ $os = centos ]; then
+        # work-around slow disk device detection with CentOS 7 in non-kvm
+        # environments
+        systemctl disable rhel-import-state.service
+        systemctl disable auditd
+        systemctl disable firewalld
+        sed -i 's/^#DefaultTimeoutStartSec=.*$/DefaultTimeoutStartSec=150s/' \
+            /etc/systemd/system.conf
+    fi
     dracut --force --regenerate-all
     rm -rf /var/lib/sss
     hardlink -v -c /usr/share/licenses
