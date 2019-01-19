@@ -14,12 +14,12 @@ key=key/dracut-ssh-travis-ci-insecure-ed25519
 
 scp -F /dev/null -o IdentityFile=$key \
     -o IdentitiesOnly=yes -o PreferredAuthentications=publickey \
-    -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=$known_hosts \
+    -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=/dev/null \
     -P $port key/ssh_host_*_key* root@localhost:/etc/ssh/
 
 ssh -F /dev/null -o IdentityFile=$key \
     -o IdentitiesOnly=yes -o PreferredAuthentications=publickey \
-    -o UserKnownHostsFile=$known_hosts \
+    -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=/dev/null \
     -p $port root@localhost <<EOF
 set -x
 restorecon -rv /etc/ssh
@@ -30,7 +30,7 @@ sleep 3
 
 scp -F /dev/null -o IdentityFile=$key \
     -o IdentitiesOnly=yes -o PreferredAuthentications=publickey \
-    -o UserKnownHostsFile=$known_hosts \
+    -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=$known_hosts \
     -P $port key/dracut_ssh_host_*_key* root@localhost:
 
 echo done
