@@ -14,7 +14,7 @@
 import re
 import sys
 
-noctl_exp = re.compile(b'\33c|\33\[[0-9;?]+[lmHJ]|\33\]0;|\33\[K')
+noctl_exp = re.compile(b'\33c|\33\[[0-9;?]*[hlmHJ]|\33\]0;|\33\[K')
 multinl_exp = re.compile(b'\n{2,}')
 
 class Control_Filter:
@@ -36,9 +36,13 @@ class Control_Filter:
             s = noctl_exp.sub(b'', s)
         i = s.rfind(b'\33')
         if i != -1:
-            if i != s.find(b'\33'):
-                raise RuntimeError('Unexpected escape sequence: {}'.format(s))
             self.__rest = s[i:]
+            if i != s.find(b'\33') or len(s) - i > 5:
+                # We don't want to be too strict about unknown escape
+                # sequences because we may actually see a sequence which is
+                # interspersed with some other text.
+                s = s.replace(b'\33', b'')
+                #raise RuntimeError('Unexpected escape sequence: {}'.format(s))
             s = memoryview(s)[:i]
             #s = s[:i]
         self.stream.buffer.write(s)
