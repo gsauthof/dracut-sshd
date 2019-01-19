@@ -8,29 +8,50 @@ set -x
 
 PS4='+${SECONDS}s '
 
-expendable_pkgs='
-geolite2-city
-geolite2-country
-git
-initscripts
-linux-firmware
-NetworkManager
-pigz
-pinentry
-sssd-client
-trousers
-xkeyboard-config
-'
+
+os=$(grep '^ID=' /etc/os-release | tr -d '"'  | cut -d = -f 2)
+
+
+if [ $os != fedora -a $os != centos ]; then
+    echo "Unknown operating system id: $os"
+    exit 1
+fi
+
+if [ $os = centos ]; then
+    dnf=yum
+    # not all packages can be excluded via the kickstart config, cf.
+    # https://unix.stackexchange.com/q/495319/1131
+    expendable_pkgs=(
+        '*firmware'
+        'NetworkManager*'
+        teamd
+    )
+else
+    dnf=dnf
+    expendable_pkgs=(
+        geolite2-city
+        geolite2-country
+        git
+        initscripts
+        linux-firmware
+        NetworkManager
+        pigz
+        pinentry
+        sssd-client
+        trousers
+        xkeyboard-config
+    )
+fi
 
 function remove_pkgs
 {
-    dnf -y remove $expendable_pkgs
+    $dnf -y remove $expendable_pkgs
 }
 
 function add_pkgs
 {
     # XXX after next base image creation
-    dnf -y install dracut-network
+    $dnf -y install dracut-network
 }
 
 function remove_locales
@@ -47,6 +68,9 @@ function remove_locales
 
 function enable_networkd
 {
+    if [ $os = centos ]; then
+        return
+    fi
     cat > /etc/systemd/network/20-wired.network <<EOF
 [Match]
 Name=en*
@@ -71,7 +95,7 @@ function post_pkg_cleanup
     dracut --force --regenerate-all
     rm -rf /var/lib/sss
     hardlink -v -c /usr/share/licenses
-    dnf clean all
+    $dnf clean all
 }
 
 
