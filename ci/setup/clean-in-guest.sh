@@ -21,9 +21,12 @@ if [ $os = centos ]; then
     dnf=yum
     # not all packages can be excluded via the kickstart config, cf.
     # https://unix.stackexchange.com/q/495319/1131
+    #
+    # we don't remove NetworkManager completely, as it initializes
+    # the network faster than ifcfg (CentOS 7 doesn't have networkd)
     expendable_pkgs=(
         '*firmware'
-        'NetworkManager*'
+        NetworkManager-team
         teamd
     )
 else
@@ -93,11 +96,16 @@ function volatilize_logs
 function post_pkg_cleanup
 {
     if [ $os = centos ]; then
+        # XXX remove after next image kickstart run
+        $dnf -y install NetworkManager
+
         # work-around slow disk device detection with CentOS 7 in non-kvm
         # environments
         systemctl disable rhel-import-state.service
         systemctl disable auditd
         systemctl disable firewalld
+        systemctl disable rsyslog.service
+        systemctl mask network
         sed -i 's/^#DefaultTimeoutStartSec=.*$/DefaultTimeoutStartSec=150s/' \
             /etc/systemd/system.conf
     fi
