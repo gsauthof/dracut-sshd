@@ -106,6 +106,15 @@ function post_pkg_cleanup
         systemctl disable firewalld
         systemctl disable rsyslog.service
         systemctl mask network
+
+        awk '/^After=/ && !d { print; print "";
+                               print "Wants=network-online.target";
+                               print "After=network-online.target";
+                               d=1; next }
+                             { print } ' \
+              /usr/lib/systemd/system/systemd-logind.service \
+            > /etc/systemd/system/systemd-logind.service
+
         sed -i 's/^#DefaultTimeoutStartSec=.*$/DefaultTimeoutStartSec=150s/' \
             /etc/systemd/system.conf
     fi
