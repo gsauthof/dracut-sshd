@@ -177,11 +177,17 @@ def test_unlock(m, extra_keys=False, check_host_key_fail=False, host_key_algo='e
     log.info(msg + ' done')
 
 def test_system(extra_keys):
+    test_key = os.environ.get('dracut_sshd_test_key', 'all')
+    test_fail = os.environ.get('dracut_sshd_test_fail', 'all')
     msg = '> Testing with extra_keys = {}'.format(extra_keys)
     log.info(msg)
     install_module(extra_keys)
     for host_key_algo in ('ed25519', 'ecdsa'):
+        if test_key != 'all' and test_key != host_key_algo:
+            continue
         for check_host_key_fail in (False, True):
+            if test_fail != 'all' and (test_fail == 'true') != check_host_key_fail:
+                continue
             with vm() as m:
                 test_unlock(m, extra_keys=extra_keys,
                         check_host_key_fail=check_host_key_fail,

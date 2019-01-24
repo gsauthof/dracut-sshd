@@ -38,6 +38,8 @@ matrix:
         env:
             dracut_sshd_dist=c7
             dracut_sshd_suite=basic
+            dracut_sshd_test_key=ed25519
+            dracut_sshd_test_fail='false'
 
 before_install: ./ci/travis.sh before_install
 
