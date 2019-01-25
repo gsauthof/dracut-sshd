@@ -126,4 +126,6 @@ zstd -q -$zlevel $root_img
 
 rm "$input_img"
 
+sha256sum "$prefix_img".zst "$root_img".zst
+
 echo done

@@ -65,6 +65,8 @@ function restore_xfs
     xfs_admin -U $root_uuid /dev/mapper/$luks_name
 }
 
+sha256sum $prefix_img_src $root_img_src
+
 rm -f $guest_img
 # advantage of -o: sparse file creation
 zstd -q -d $prefix_img_src -o $guest_img
