@@ -143,6 +143,15 @@ def test_unlock(m, extra_keys=False, check_host_key_fail=False, host_key_algo='e
             known_horsts(other_host_key_filename) as (other_known_filename, _):
         time.sleep(boot_wait)
 
+        cmd = origin() + '/list-auth-methods.sh'
+        out, r = pexpect.run(cmd, withexitstatus=True,
+                logfile=ctlseq.Control_Filter(), timeout=dracut_timeout)
+        out = out.strip()
+        out = out[out.rfind(b':')+2:]
+        if r != 0 or out != b'publickey':
+            raise RuntimeError(('Expected publickey authentication method'
+                    ', got: {} (exit code: {})').format(out, r))
+
         if check_host_key_fail:
             connection_failed = False
             try:
