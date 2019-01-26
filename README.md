@@ -64,6 +64,9 @@ Copy the `46sshd` subdirectory to the [Dracut][dracut] module directory:
 
     # cp -ri 46sshd /usr/lib/dracut/modules.d
 
+Alternatively, you can install the latest stable version from the
+[dracut-sshd copr repository][copr].
+
 With a sshd that lacks systemd support (e.g. under Gentoo), one
 has to adjust the systemd service file:
 
@@ -79,6 +82,9 @@ It's enabled, by default - unless the Dracut network module is missing. Thus:
 
 (this package also contains the [`systemd-networkd`][networkd]
 Dracut module)
+
+When installing from copr, `dracut-network` is automatically
+installed as dependency.
 
 Make sure that `/root/.ssh/authorized_keys` contains the right
 keys, as it's included in the [initramfs][iramfs]:
@@ -338,6 +344,7 @@ Related ticket: [Bug 524727 - Dracut + encrypted root + networking (2009)][bug52
 [bug524727]: https://bugzilla.redhat.com/show_bug.cgi?id=524727
 [bug868421]: https://bugzilla.redhat.com/show_bug.cgi?id=868421
 [clevis]: https://github.com/latchset/clevis
+[copr]: https://copr.fedorainfracloud.org/coprs/gsauthof/dracut-sshd/
 [cryptssh]: https://github.com/dracut-crypt-ssh/dracut-crypt-ssh
 [cryptssh-uwe]: https://github.com/dracut-crypt-ssh/dracut-crypt-ssh/pull/17
 [dracut]: https://dracut.wiki.kernel.org/index.php/Main_Page
