@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/gsauthof/dracut-sshd.svg?branch=master)](https://travis-ci.org/gsauthof/dracut-sshd)
+[![Copr Build Status](https://copr.fedorainfracloud.org/coprs/gsauthof/dracut-sshd/package/dracut-sshd/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/gsauthof/dracut-sshd/)
 
 This [Dracut][dracut] module (dracut-sshd) integrates the
 [OpenSSH][ossh] sshd into the [initramfs][iramfs]. It allows for
@@ -328,6 +329,7 @@ Related ticket: [Bug 524727 - Dracut + encrypted root + networking (2009)][bug52
 
 ## Tested Environments
 
+- Fedora 29
 - Fedora 28
 - Fedora 27
 - CentOS 7
