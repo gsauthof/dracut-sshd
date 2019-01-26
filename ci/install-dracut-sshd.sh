@@ -22,6 +22,16 @@ ssh_flags=(
     -o UserKnownHostsFile="$known_hosts"
 )
 
+# work around CentOS 7 networking taking long to get ready
+# in non-kvm fully emulated environment
+# ssh_exchange_identification: read: Connection reset by peer
+for i in $(seq 7); do
+    if ssh -p $port "${ssh_flags[@]}" root@"$host" hostname ; then
+        break
+    fi
+    sleep 1
+done
+
 scp -r -P $port "${ssh_flags[@]}" \
     "$base"/46sshd root@"$host":/usr/lib/dracut/modules.d
 

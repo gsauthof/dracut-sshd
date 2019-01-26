@@ -161,14 +161,29 @@ def test_unlock(m, extra_keys=False, check_host_key_fail=False, host_key_algo='e
         if check_host_key_fail:
             connection_failed = False
             kh = known_filename if extra_keys else other_known_filename
-            try:
-                unlock.ssh_connect(key_filename, kh,
-                        host_key_algo)
-            except pexpect.pxssh.ExceptionPxssh:
-                connection_failed = True
+            # work-around slow network availability with non-kvm CentOS 7
+            for i in range(7):
+                try:
+                    unlock.ssh_connect(key_filename, kh,
+                            host_key_algo)
+                    connection_failed = False
+                    break
+                except pexpect.pxssh.ExceptionPxssh:
+                    connection_failed = True
+                    time.sleep(1)
             assert connection_failed == True
         kh = other_known_filename  if extra_keys else known_filename
-        s = unlock.ssh_connect(key_filename, kh, host_key_algo)
+        s = None
+        # work-around slow network availability with non-kvm CentOS 7
+        for i in range(7):
+            try:
+                s = unlock.ssh_connect(key_filename, kh, host_key_algo)
+                break
+            except pexpect.pxssh.ExceptionPxssh:
+                log.info('-- ssh {} try failed'.format(i))
+                if i == 6:
+                    raise
+                time.sleep(1)
         s.sendline('hostname')
         s.expect('localhost')
         s.logout()
