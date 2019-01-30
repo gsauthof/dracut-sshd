@@ -232,7 +232,7 @@ An alternative to the [networkd][networkd] configuration is to
 configure network via additional [Dracut command line
 parameters][dracut-cmdline].
 
-On systems without networkd (e.g. CentOS 7) this is the only way
+On systems without networkd (e.g. CentOS 7/RHEL 8) this is the only way
 to enable network connectivity in early userspace. For example,
 the following parameters enable DHCP on all network interfaces in
 early userspace:
@@ -243,8 +243,9 @@ They need to be appended to `GRUB_CMDLINE_LINUX=` in
 `/etc/default/grub` and to be effective the Grub config then
 needs to be regenerated:
 
-    # grub2-mkconfig -o  /etc/grub2.cfg
-    # grub2-mkconfig -o  /etc/grub2-efi.cfg
+    # grub2-editenv - unset kernelopts
+    # grub2-mkconfig -o /etc/grub2.cfg
+    # grub2-mkconfig -o /etc/grub2-efi.cfg
 
 Note that on distributions like CentOS 7/Fedora 27/28 there is
 also the old-school [ifcfg][ifcfg] network scripts system under
@@ -259,6 +260,12 @@ command line/detected hardware). With CentOS 7/Fedora 27/28 the
 default network configuration (in late userspace) uses
 NetworkManager which only uses the `ifcfg-*` files under
 `/etc/sysconfig/network-scripts`.
+
+The `grub2-editenv` call is only necessary on systems (such as
+RHEL 8) where the kernel parameters are stored in `/etc/grubenv`
+instead of in each menu entry (either in the main `grub2.cfg` or
+under `/boot/loader/entries` if the system follows the [boot
+loader specification (bls)[bls]).
 
 
 ## Hardware Alternatives
@@ -339,8 +346,10 @@ Related ticket: [Bug 524727 - Dracut + encrypted root + networking (2009)][bug52
 - Fedora 28
 - Fedora 27
 - CentOS 7
+- RHEL 8 beta 1
 
 [arch]: https://wiki.archlinux.org/index.php/Dm-crypt/Specialties#Remote_unlocking_.28hooks:_netconf.2C_dropbear.2C_tinyssh.2C_ppp.29
+[bls]: https://systemd.io/BOOT_LOADER_SPECIFICATION
 [bug524727]: https://bugzilla.redhat.com/show_bug.cgi?id=524727
 [bug868421]: https://bugzilla.redhat.com/show_bug.cgi?id=868421
 [clevis]: https://github.com/latchset/clevis
