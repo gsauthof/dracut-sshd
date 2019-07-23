@@ -62,7 +62,12 @@ install() {
     grep '^sshd:' /etc/passwd >> "$initdir/etc/passwd"
     grep '^sshd:' /etc/group  >> "$initdir/etc/group"
 
-    mkdir -p "$initdir/var/empty/sshd"
+    # Create privilege seperation directory
+    if [ -d /var/empty/sshd ]; then
+        mkdir -p -m 0755 "$initdir/var/empty/sshd"
+    else
+        mkdir -p -m 0755 "$initdir/var/lib/empty"
+    fi
 
     systemctl --root "$initdir" enable sshd
 
