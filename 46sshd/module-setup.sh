@@ -50,8 +50,9 @@ install() {
     /usr/bin/install -m 600 "$authorized_keys" \
             "$initdir/root/.ssh/authorized_keys"
 
-    inst_multiple /usr/sbin/sshd \
-        /etc/sysconfig/sshd
+    inst_simple /usr/sbin/sshd
+    inst_multiple -o /etc/sysconfig/ssh /etc/sysconfig/sshd
+
     # First entry for Fedora 28, second for Fedora 27
     inst_multiple -o /etc/crypto-policies/back-ends/opensshserver.config \
             /etc/crypto-policies/back-ends/openssh-server.config
