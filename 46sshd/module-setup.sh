@@ -45,8 +45,8 @@ install() {
         return 1
     fi
 
-    mkdir -p -m 700 "$initdir/root/.ssh"
-    chmod 700 "$initdir/root"
+    mkdir -p -m 0700 "$initdir/root"
+    mkdir -p -m 0700 "$initdir/root/.ssh"
     /usr/bin/install -m 600 "$authorized_keys" \
             "$initdir/root/.ssh/authorized_keys"
 
