@@ -13,7 +13,7 @@ check() {
 # called by dracut
 depends() {
     # e.g. CentOS 7 doesn't has systemd-networkd
-    if [ -f /usr/lib/systemd/systemd-networkd ]; then
+    if [ -L /etc/systemd/system/multi-user.target.wants/systemd-networkd.service ]; then
         # it's more lightweight than using the ifcfg dracut module
         # and it isn't enabled, by default
         echo systemd-networkd
