@@ -17,10 +17,9 @@ depends() {
         # it's more lightweight than using the ifcfg dracut module
         # and it isn't enabled, by default
         echo systemd-networkd
+    else
+        echo "network"
     fi
-    # we don't need to depend on network because ifcfg already depends on it
-    # and ifcfg is enabled, by default, in CentOS 7/Fedora 27/28
-    # echo network
 }
 
 # called by dracut
