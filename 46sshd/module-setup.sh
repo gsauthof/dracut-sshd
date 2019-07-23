@@ -40,6 +40,10 @@ install() {
     done
 
     authorized_keys=/root/.ssh/authorized_keys
+    if [ ! -r "$authorized_keys" ]; then
+        dfatal "No authorized_keys for root user found!"
+        return 1
+    fi
 
     mkdir -p -m 700 "$initdir/root/.ssh"
     chmod 700 "$initdir/root"
