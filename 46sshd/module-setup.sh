@@ -13,14 +13,13 @@ check() {
 # called by dracut
 depends() {
     # e.g. CentOS 7 doesn't has systemd-networkd
-    if [ -f /usr/lib/systemd/systemd-networkd ]; then
+    if [ -L /etc/systemd/system/multi-user.target.wants/systemd-networkd.service ]; then
         # it's more lightweight than using the ifcfg dracut module
         # and it isn't enabled, by default
         echo systemd-networkd
+    else
+        echo "network"
     fi
-    # we don't need to depend on network because ifcfg already depends on it
-    # and ifcfg is enabled, by default, in CentOS 7/Fedora 27/28
-    # echo network
 }
 
 # called by dracut
@@ -40,14 +39,19 @@ install() {
     done
 
     authorized_keys=/root/.ssh/authorized_keys
+    if [ ! -r "$authorized_keys" ]; then
+        dfatal "No authorized_keys for root user found!"
+        return 1
+    fi
 
-    mkdir -p -m 700 "$initdir/root/.ssh"
-    chmod 700 "$initdir/root"
+    mkdir -p -m 0700 "$initdir/root"
+    mkdir -p -m 0700 "$initdir/root/.ssh"
     /usr/bin/install -m 600 "$authorized_keys" \
             "$initdir/root/.ssh/authorized_keys"
 
-    inst_multiple /usr/sbin/sshd \
-        /etc/sysconfig/sshd
+    inst_simple /usr/sbin/sshd
+    inst_multiple -o /etc/sysconfig/ssh /etc/sysconfig/sshd
+
     # First entry for Fedora 28, second for Fedora 27
     inst_multiple -o /etc/crypto-policies/back-ends/opensshserver.config \
             /etc/crypto-policies/back-ends/openssh-server.config
@@ -57,7 +61,12 @@ install() {
     grep '^sshd:' /etc/passwd >> "$initdir/etc/passwd"
     grep '^sshd:' /etc/group  >> "$initdir/etc/group"
 
-    mkdir -p "$initdir/var/empty/sshd"
+    # Create privilege seperation directory
+    if [ -d /var/empty/sshd ]; then
+        mkdir -p -m 0755 "$initdir/var/empty/sshd"
+    else
+        mkdir -p -m 0755 "$initdir/var/lib/empty"
+    fi
 
     systemctl --root "$initdir" enable sshd
 

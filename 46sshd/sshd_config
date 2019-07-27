@@ -1,5 +1,5 @@
 SyslogFacility                  AUTHPRIV
-PermitRootLogin                 yes
+PermitRootLogin                 prohibit-password
 AuthorizedKeysFile              .ssh/authorized_keys
 AuthenticationMethods           publickey
 UsePAM                          no

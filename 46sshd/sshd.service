@@ -15,10 +15,11 @@ Type=notify
 
 EnvironmentFile=-/etc/crypto-policies/back-ends/opensshserver.config
 EnvironmentFile=-/etc/sysconfig/sshd
+EnvironmentFile=-/etc/sysconfig/ssh
 
 # Start command requires the `-e` option if and only if `Type=simple`
 # is configured, see above.
-ExecStart=/usr/sbin/sshd -D $OPTIONS $CRYPTO_POLICY
+ExecStart=/usr/sbin/sshd -D $SSHD_OPTS $OPTIONS $CRYPTO_POLICY
 
 ExecReload=/bin/kill -HUP $MAINPID
 KillMode=process
