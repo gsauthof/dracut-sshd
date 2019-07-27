@@ -6,6 +6,11 @@ This [Dracut][dracut] module (dracut-sshd) integrates the
 remote unlocking of a fully encrypted root filesystem and remote
 access to the Dracut emergency shell (i.e. early userspace).
 
+It's compatible with systems that use Dracut as initramfs manager
+and systemd as init system, such as Fedora, CentOS/RHEL (version
+7 or greater) and SUSE. Gentoo is also to known to work with
+dracut-sshd, as long as it's configured with systemd and Dracut.
+
 2018, Georg Sauthoff <mail@gms.tf>, GPLv3+
 
 ## Example: Open Encrypted Root Filesystem
@@ -101,12 +106,14 @@ Create a non-[NetworkManager][nm] network config, e.g. via
     [Network]
     DHCP=ipv4
 
-Adjust the `Name=`. Even if the system doesn't have networkd
-enabled (as it - say - uses NetworkManager), the sshd dracut
-module unconditionally includes the networkd config files for
-establishing network connectivity. However, the author of this
-README strongly recommends to use Networkd instead of NetworkManager
-on servers and server-like systems.
+Adjust the `Name=`, if necessary. In case the system doesn't have
+networkd enabled one can just enable it for initramfs (cf.
+[`add_dracutmodules`][addmod] and [`dracut --add
+systemd-networkd`][dradd]).  Alternatively, early boot network
+connectivity can be configured by other means (i.e.  kernel
+parameters, see below).  However, the author of this README
+strongly recommends to use Networkd instead of NetworkManager on
+servers and server-like systems.
 
 If the above example is sufficient you can install it via:
 
@@ -347,6 +354,8 @@ Related ticket: [Bug 524727 - Dracut + encrypted root + networking (2009)][bug52
 - Fedora 27
 - CentOS 7
 - RHEL 8 beta 1
+- Gentoo (by a contributor)
+- SUSE (by a contributor)
 
 [arch]: https://wiki.archlinux.org/index.php/Dm-crypt/Specialties#Remote_unlocking_.28hooks:_netconf.2C_dropbear.2C_tinyssh.2C_ppp.29
 [bls]: https://systemd.io/BOOT_LOADER_SPECIFICATION
@@ -376,3 +385,5 @@ Related ticket: [Bug 524727 - Dracut + encrypted root + networking (2009)][bug52
 [switchroot]: https://www.kernel.org/doc/Documentation/filesystems/ramfs-rootfs-initramfs.txt
 [tmpfs]: https://en.wikipedia.org/wiki/Tmpfs
 [tpm]: https://en.wikipedia.org/wiki/Trusted_Platform_Module
+[addmod]: https://manpath.be/f30/5/dracut.conf#L29
+[dradd]: https://manpath.be/f30/8/dracut#L94

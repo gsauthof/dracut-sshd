@@ -18,7 +18,9 @@ depends() {
         # and it isn't enabled, by default
         echo systemd-networkd
     else
-        echo "network"
+        # not necessarily a hard dependency, e.g. when the systemd-networkd is
+        # explicitly added and system itself uses NetworkManager
+        echo network
     fi
 }
 
