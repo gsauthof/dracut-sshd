@@ -14,8 +14,10 @@ Before=cryptsetup.target
 Type=notify
 
 EnvironmentFile=-/etc/crypto-policies/back-ends/opensshserver.config
+EnvironmentFile=-/etc/crypto-policies/back-ends/openssh-server.config
 EnvironmentFile=-/etc/sysconfig/sshd
 EnvironmentFile=-/etc/sysconfig/ssh
+EnvironmentFile=-/etc/sysconfig/dracut-sshd
 
 # Start command requires the `-e` option if and only if `Type=simple`
 # is configured, see above.

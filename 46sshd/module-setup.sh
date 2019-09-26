@@ -52,7 +52,8 @@ install() {
             "$initdir/root/.ssh/authorized_keys"
 
     inst_simple /usr/sbin/sshd
-    inst_multiple -o /etc/sysconfig/ssh /etc/sysconfig/sshd
+    inst_multiple -o /etc/sysconfig/sshd /etc/sysconfig/ssh \
+            /etc/sysconfig/dracut-sshd
 
     # First entry for Fedora 28, second for Fedora 27
     inst_multiple -o /etc/crypto-policies/back-ends/opensshserver.config \

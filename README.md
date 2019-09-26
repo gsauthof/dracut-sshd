@@ -272,7 +272,7 @@ The `grub2-editenv` call is only necessary on systems (such as
 RHEL 8) where the kernel parameters are stored in `/etc/grubenv`
 instead of in each menu entry (either in the main `grub2.cfg` or
 under `/boot/loader/entries` if the system follows the [boot
-loader specification (bls)[bls]).
+loader specification (bls)][bls]).
 
 
 ## Hardware Alternatives
@@ -291,6 +291,13 @@ device can help with early boot issues, however:
 
 Thus, as a general rule, one wants to avoid a BMC/KVM as much as
 possible.
+
+## FAQ
+
+- [How to make the early boot sshd listen on a non-standard port?]
+  A: If you really [want to do that][port] you can provide a
+  `/etc/sysconfig/dracut-sshd` that defines `SSHD_OPTS`
+  ([see also][port]).
 
 ## Related Work
 
@@ -387,3 +394,4 @@ Related ticket: [Bug 524727 - Dracut + encrypted root + networking (2009)][bug52
 [tpm]: https://en.wikipedia.org/wiki/Trusted_Platform_Module
 [addmod]: https://manpath.be/f30/5/dracut.conf#L29
 [dradd]: https://manpath.be/f30/8/dracut#L94
+[port]: https://github.com/gsauthof/dracut-sshd/issues/9#issuecomment-531308602
