@@ -1,6 +1,11 @@
 Name:       {{{ git_dir_name }}}
-Version:    {{{ git_dir_version }}}
-Release:    1%{?dist}
+# The git_dir_version macro is quite a mis-match for our use-case
+# since using a 3-component version number requires updating
+# the 'lead' parameter, anyways
+# cf. https://pagure.io/rpkg-util/issue/21#comment-601077
+#Version:    {{{ git_dir_version }}}
+Version:    0.5.1
+Release:    2%{?dist}
 Summary:    Provide SSH access to initramfs early user space
 URL:        https://github.com/gsauthof
 License:    GPLv3+
