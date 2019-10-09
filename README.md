@@ -294,10 +294,18 @@ possible.
 
 ## FAQ
 
-- [How to make the early boot sshd listen on a non-standard port?]
+- How to make the early boot sshd listen on a non-standard port?
   A: If you really [want to do that][port] you can provide a
   `/etc/sysconfig/dracut-sshd` that defines `SSHD_OPTS`
   ([see also][port]).
+- Why does sshd hangs during early-boot when running dracut-sshd
+  inside a virtual machine (VM)?
+  A: Most likely the VM guest is short of entropy and thus sshd
+  blocks during startup (without logging a warning) for an
+  indefinite amount of time. Possible up to the systemd service
+  restart timeout. Directing some of the VM host's entropy into
+  the VM guest fixes this issue ([cf. these comments for
+  examples of how to do this][entropy]).
 
 ## Related Work
 
@@ -395,3 +403,5 @@ Related ticket: [Bug 524727 - Dracut + encrypted root + networking (2009)][bug52
 [addmod]: https://manpath.be/f30/5/dracut.conf#L29
 [dradd]: https://manpath.be/f30/8/dracut#L94
 [port]: https://github.com/gsauthof/dracut-sshd/issues/9#issuecomment-531308602
+[entropy]: https://github.com/gsauthof/dracut-sshd/issues/12
+
