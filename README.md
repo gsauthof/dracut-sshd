@@ -364,10 +364,8 @@ Related ticket: [Bug 524727 - Dracut + encrypted root + networking (2009)][bug52
 
 ## Tested Environments
 
-- Fedora 29
-- Fedora 28
-- Fedora 27
-- CentOS 7
+- Fedora 27, 28, 29
+- CentOS 7, 8
 - RHEL 8 beta 1
 - Gentoo (by a contributor)
 - SUSE (by a contributor)
