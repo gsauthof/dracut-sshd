@@ -39,7 +39,11 @@ install() {
         fi
     done
 
-    authorized_keys=/root/.ssh/authorized_keys
+    if [ -e /root/.ssh/dracut_authorized_keys ]; then
+        authorized_keys=/root/.ssh/dracut_authorized_keys
+    else
+        authorized_keys=/root/.ssh/authorized_keys
+    fi
     if [ ! -r "$authorized_keys" ]; then
         dfatal "No authorized_keys for root user found!"
         return 1

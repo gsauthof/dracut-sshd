@@ -96,6 +96,9 @@ keys, as it's included in the [initramfs][iramfs]:
 
     # cat /root/.ssh/authorized_keys
 
+That said, if `/root/.ssh/dracut_authorized_keys` is present
+then it is included, instead.
+
 Create a non-[NetworkManager][nm] network config, e.g. via
 [Networkd][networkd]:
 
