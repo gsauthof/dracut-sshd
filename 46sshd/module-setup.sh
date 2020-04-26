@@ -74,7 +74,7 @@ install() {
         mkdir -p -m 0755 "$initdir/var/lib/empty"
     fi
 
-    systemctl --root "$initdir" enable sshd
+    systemctl -q --root "$initdir" enable sshd
 
     # as of Fedora 28, the systemd-networkd dracut module doesn't
     # include those files
