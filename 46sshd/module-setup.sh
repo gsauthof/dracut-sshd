@@ -91,6 +91,10 @@ install() {
     echo systemd-tty-ask-password-agent >> "$initdir/root/.bash_history"
     chmod 600 "$initdir/root/.bash_history"
 
+    # sshd requires /var/log/lastlog for tracking login information
+    mkdir -p -m 0755 "$initdir/var/log"
+    touch "$initdir/var/log/lastlog"
+
     return 0
 }
 
