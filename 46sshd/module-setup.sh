@@ -68,11 +68,18 @@ install() {
     grep '^sshd:' /etc/group  >> "$initdir/etc/group"
 
     # Create privilege seperation directory
-    if [ -d /var/empty/sshd ]; then
-        mkdir -p -m 0755 "$initdir/var/empty/sshd"
-    else
-        mkdir -p -m 0755 "$initdir/var/lib/empty"
-    fi
+    # /var/empty/sshd  -> Fedora, CentOS, RHEL
+    # /var/emtpy       -> Arch, OpenSSH upstream
+    # /var/lib/empty   -> Suse
+    # /run/sshd        -> Debian
+    # /var/chroot/ssh  -> Void Linux
+    local d
+    for d in /var/empty/sshd /var/empty /var/lib/empty /run/sshd /var/chroot/ssh ; do
+        if [ -d "$d" ]; then
+            mkdir -p -m 0755 "$initdir$d"
+            break
+        fi
+    done
 
     systemctl -q --root "$initdir" enable sshd
 
