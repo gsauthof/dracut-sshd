@@ -35,6 +35,9 @@ done
 scp -r -P $port "${ssh_flags[@]}" \
     "$base"/46sshd root@"$host":/usr/lib/dracut/modules.d
 
+scp -r -P $port "${ssh_flags[@]}" \
+    "$base"/example/90-networkd.conf root@"$host":/etc/dracut.conf.d
+
 if [ "$with_extra_keys" = y ]; then
     ssh -p $port "${ssh_flags[@]}" root@"$host" \
         cp 'dracut_ssh_host_*_key*' /etc/ssh
