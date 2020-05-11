@@ -372,6 +372,7 @@ Related ticket: [Bug 524727 - Dracut + encrypted root + networking (2009)][bug52
 - RHEL 8 beta 1
 - Gentoo (by a contributor)
 - SUSE (by a contributor)
+- Arch (by a contributor)
 
 [arch]: https://wiki.archlinux.org/index.php/Dm-crypt/Specialties#Remote_unlocking_.28hooks:_netconf.2C_dropbear.2C_tinyssh.2C_ppp.29
 [bls]: https://systemd.io/BOOT_LOADER_SPECIFICATION
