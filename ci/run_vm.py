@@ -60,10 +60,13 @@ def start(qemu, image, unlock, pw=None):
                 '-device', 'virtio-blk,drive=q1', ]
     # as of 2018-01, travis-ci doesn't suppport nested virtualization:
     # https://travis-ci.community/t/add-kvm-support/1406
-    if os.environ.get('TRAVIS', 'false') == 'true':
-        kvm_flags = []
-    else:
+    # as of 2020-05, there is hope, i.e. it seems that newer Travis builders
+    # have nested virtualization support enabled:
+    # https://travis-ci.community/t/add-kvm-support/1406/13
+    if os.path.exists('/dev/kvm'):
         kvm_flags = [ '-enable-kvm' ]
+    else:
+        kvm_flags = []
     s = pexpect.spawn(qemu,
             kvm_flags + [ '-nodefaults', '-nographic', '-m', '2G',
                 # otherwise the sshd startup easily fails due to low entropy

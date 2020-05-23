@@ -74,7 +74,10 @@ rm -f $root_img
 zstd -q -d $root_img_src -o $root_img
 
 qemu-nbd  --connect  $nbd_guest $guest_img
-partx -uv $nbd_guest
+for i in 1 2 3; do
+    partx -uv $nbd_guest 2>&1 | grep failed || break
+    sleep $i
+done
 
 part=p
 for i in 4 2; do
