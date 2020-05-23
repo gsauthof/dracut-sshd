@@ -118,9 +118,11 @@ parameters, see below).  However, the author of this README
 strongly recommends to use Networkd instead of NetworkManager on
 servers and server-like systems.
 
-If the above example is sufficient you can install it via:
+If the above example is sufficient you can copy the drop-in config
+file in `/etc/dracut.conf.d/`:
 
     # cp example/20-wired.network  /etc/systemd/network
+    # cp example/90-networkd.conf /etc/dracut.conf.d
 
 Finally regenerate the initramfs:
 
@@ -406,4 +408,3 @@ Related ticket: [Bug 524727 - Dracut + encrypted root + networking (2009)][bug52
 [dradd]: https://manpath.be/f30/8/dracut#L94
 [port]: https://github.com/gsauthof/dracut-sshd/issues/9#issuecomment-531308602
 [entropy]: https://github.com/gsauthof/dracut-sshd/issues/12
-
