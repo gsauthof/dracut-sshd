@@ -12,15 +12,7 @@ check() {
 
 # called by dracut
 depends() {
-    # If systemd-networkd runs on the system, use it. It's more lightweight
-    # than using the ifcfg dracut module and it isn't enabled, by default.
-    if systemctl -q is-active systemd-networkd; then
-        echo systemd-networkd
-    else
-        # not necessarily a hard dependency, e.g. when the systemd-networkd is
-        # explicitly added and system itself uses NetworkManager
-        echo network
-    fi
+    return 0
 }
 
 # called by dracut

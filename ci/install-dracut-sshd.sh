@@ -48,11 +48,12 @@ fi
 
 ssh -p $port "${ssh_flags[@]}" root@"$host" <<'EOF'
 set -x
-if [ -f /usr/lib/systemd/systemd-networkd ]; then
-    :
-else
+if [ ! -f /usr/lib/systemd/systemd-networkd ]; then
     sed -i 's/^\(GRUB_CMDLINE_LINUX=\)"\([^"]\+\)"/\1"\2 rd.neednet=1 ip=dhcp"/' /etc/default/grub
     grub2-mkconfig -o  /etc/grub2.cfg
+
+    rm /etc/dracut.conf.d/90-networkd.conf
+    echo 'add_dracutmodules+=" network "' > /etc/dracut.conf.d/90-network.conf
 fi
 dracut -f -v
 shutdown -h now
