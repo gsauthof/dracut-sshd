@@ -4,8 +4,8 @@ Name:       {{{ git_dir_name }}}
 # the 'lead' parameter, anyways
 # cf. https://pagure.io/rpkg-util/issue/21#comment-601077
 #Version:    {{{ git_dir_version }}}
-Version:    0.5.1
-Release:    2%{?dist}
+Version:    0.6.1
+Release:    1%{?dist}
 Summary:    Provide SSH access to initramfs early user space
 URL:        https://github.com/gsauthof
 License:    GPLv3+
@@ -38,5 +38,10 @@ cp -r 46sshd %{buildroot}/usr/lib/dracut/modules.d/
 %doc example/20-wired.network
 
 %changelog
+* Thu May 28 2020 Georg Sauthoff <mail@gms.tf> - 0.6.1-1
+- eliminate dracut module dependencies
+- don't auto-include networkd configurations, anymore
+- auto-include sshd executable dependencies
+
 * Sat Jan 26 2019 Georg Sauthoff <mail@gms.tf> - 0.4-1
 - initial packaging
