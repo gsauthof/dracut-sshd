@@ -326,6 +326,19 @@ possible.
   restart timeout. Directing some of the VM host's entropy into
   the VM guest fixes this issue ([cf. these comments for
   examples of how to do this][entropy]).
+- Why do I get `Permission denied (publickey)` although the same
+  authorized key works after the system is booted?
+  A: This can be caused by a root account that is locked with `!`
+  instead of `*`. In that case it's enough to change the lock
+  method (or set a password) and regenerate the initramfs.
+  Background: On some systems Dracut also includes `/etc/shadow`
+  which is then used by sshd. In early userspace, there is no
+  PAM, thus sshd uses built-in code for shadow handling. In
+  contrast to usual PAM configuration (which is used by late
+  userspace sshd, by default), sshd itself differentiates
+  between `*` and `!` as invalid password field tokens. Meaning
+  that only `*` allows public key authentication while `!` blocks
+  any login ([see also][i30]).
 
 ## Related Work
 
@@ -423,4 +436,4 @@ Related ticket: [Bug 524727 - Dracut + encrypted root + networking (2009)][bug52
 [port]: https://github.com/gsauthof/dracut-sshd/issues/9#issuecomment-531308602
 [entropy]: https://github.com/gsauthof/dracut-sshd/issues/12
 [iitems]: https://manpath.be/f32/dracut/050-26.git20200316.fc32.x86_64/5/dracut.conf#L74
-
+[i30]: https://github.com/gsauthof/dracut-sshd/issues/30
