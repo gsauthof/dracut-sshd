@@ -1,0 +1,15 @@
+if [ -n "$SSH_TTY" ]; then
+  export PS1="initramfs-ssh:\${PWD}# "
+  cat << EOF
+
+Welcome to the early boot SSH environment. Please type
+
+  systemd-tty-ask-password-agent
+
+(or press "arrow up") to unlock your disks and continue
+the boot process. This shell will terminate automatically
+a few seconds after the unlocking process has succeeded.
+
+EOF
+fi
+

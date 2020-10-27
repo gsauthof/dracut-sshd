@@ -52,6 +52,9 @@ install() {
     /usr/bin/install -m 600 "$authorized_keys" \
             "$initdir/root/.ssh/authorized_keys"
 
+    /usr/bin/install -m 600 "${moddir}/profile" \
+            "$initdir/root/.profile"
+
     inst_binary /usr/sbin/sshd
     inst_multiple -o /etc/sysconfig/sshd /etc/sysconfig/ssh \
             /etc/sysconfig/dracut-sshd
