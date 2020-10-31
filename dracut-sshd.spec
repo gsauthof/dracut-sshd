@@ -4,10 +4,10 @@ Name:       {{{ git_dir_name }}}
 # the 'lead' parameter, anyways
 # cf. https://pagure.io/rpkg-util/issue/21#comment-601077
 #Version:    {{{ git_dir_version }}}
-Version:    0.6.1
-Release:    2%{?dist}
+Version:    0.6.2
+Release:    1%{?dist}
 Summary:    Provide SSH access to initramfs early user space
-URL:        https://github.com/gsauthof
+URL:        https://github.com/gsauthof/dracut-sshd
 License:    GPLv3+
 VCS:        {{{ git_dir_vcs }}}
 Source:     {{{ git_dir_pack }}}
@@ -39,6 +39,9 @@ cp -r 46sshd %{buildroot}/usr/lib/dracut/modules.d/
 %doc example/90-networkd.conf
 
 %changelog
+* Sat Oct 31 2020 Georg Sauthoff <mail@gms.tf> - 0.6.2-1
+- check whether key is included
+
 * Thu May 28 2020 Georg Sauthoff <mail@gms.tf> - 0.6.1-2
 - add example dracut config
 
