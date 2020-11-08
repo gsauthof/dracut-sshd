@@ -1,6 +1,14 @@
 [![Build Status](https://travis-ci.org/gsauthof/dracut-sshd.svg?branch=master)](https://travis-ci.org/gsauthof/dracut-sshd)
 [![Copr Build Status](https://copr.fedorainfracloud.org/coprs/gsauthof/dracut-sshd/package/dracut-sshd/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/gsauthof/dracut-sshd/)
 
+
+#
+# TODO:
+# * grab only root user from passwd/shadow/group
+# * document password login option
+#
+
+
 This [Dracut][dracut] module (dracut-sshd) integrates the
 [OpenSSH][ossh] sshd into the [initramfs][iramfs]. It allows for
 remote unlocking of a fully encrypted root filesystem and remote
@@ -104,7 +112,7 @@ installed as dependency.
 Create a non-[NetworkManager][nm] network config, e.g. via
 [Networkd][networkd]:
 
-    $ cat /etc/systemd/network/20-wired.network 
+    $ cat /etc/systemd/network/20-wired.network
     [Match]
     Name=e*
 

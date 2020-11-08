@@ -1,11 +1,11 @@
 SyslogFacility                  AUTHPRIV
-PermitRootLogin                 prohibit-password
+PermitRootLogin                 yes
 AuthorizedKeysFile              .ssh/authorized_keys
-AuthenticationMethods           publickey
+AuthenticationMethods           publickey password keyboard-interactive
 UsePAM                          no
 X11Forwarding                   no
+Port                            22
 
 AcceptEnv LANG LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES
 AcceptEnv LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT
 AcceptEnv LC_IDENTIFICATION LC_ALL LANGUAGE
-
