@@ -342,8 +342,8 @@ possible.
   any login ([see also][i30]).
 - How to make password login possible?
   A: If you accept the risk of having your root password in the
-  unencrypted initrd, you can add `ALLOW_ROOT_PASSWORD_LOGIN=yes` in the
-  `/etc/sysconfig/dracut-sshd` file.
+  unencrypted initrd, you can add `ALLOW_ROOT_PASSWORD_LOGIN=yes`
+  in the `/etc/sysconfig/dracut-sshd` file.
 
 ## Related Work
 
