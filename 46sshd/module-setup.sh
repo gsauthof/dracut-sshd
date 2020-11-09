@@ -66,10 +66,13 @@ install() {
         grep '^root:' /etc/passwd >> "$initdir/etc/passwd"
         grep '^root:' /etc/group >> "$initdir/etc/group"
         grep '^root:' /etc/shadow >> "$initdir/etc/shadow"
-        inst_simple "${moddir}/sshd_password_config" /etc/ssh/sshd_config
-    else
-        inst_simple "${moddir}/sshd_config" /etc/ssh/sshd_config
+        if [ grep -q "^SSHD_OPTS=" /etc/sysconfig/dracut-sshd ];then
+          sed -i 's/^SSHD_OPTS="[^"]*/& -o "PermitRootLogin yes" -o "AuthenticationMethods publickey password keyboard-interactive"/' /etc/sysconfig/dracut-sshd
+        else
+          echo SSHD_OPTS=' -o "PermitRootLogin yes" -o "AuthenticationMethods publickey password keyboard-interactive"' >> /etc/sysconfig/dracut-sshd
+        fi
     fi
+    inst_simple "${moddir}/sshd_config" /etc/ssh/sshd_config
 
     grep '^sshd:' /etc/passwd >> "$initdir/etc/passwd"
     grep '^sshd:' /etc/group  >> "$initdir/etc/group"
