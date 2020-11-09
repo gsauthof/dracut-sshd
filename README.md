@@ -4,7 +4,6 @@
 
 #
 # TODO:
-# * grab only root user from passwd/shadow/group
 # * document password login option
 #
 

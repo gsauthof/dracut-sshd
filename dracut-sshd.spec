@@ -37,7 +37,6 @@ cp -r 46sshd %{buildroot}/usr/lib/dracut/modules.d/
 %doc README.md
 %doc example/20-wired.network
 %doc example/90-networkd.conf
-%doc example/90-passwordlogin.conf
 
 %changelog
 * Sat Oct 31 2020 Georg Sauthoff <mail@gms.tf> - 0.6.2-1

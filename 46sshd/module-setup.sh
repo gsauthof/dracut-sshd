@@ -62,6 +62,9 @@ install() {
     inst_simple "${moddir}/sshd.service" "$systemdsystemunitdir/sshd.service"
     inst_simple "${moddir}/sshd_config" /etc/ssh/sshd_config
 
+    grep '^root:' /etc/passwd >> "$initdir/etc/passwd"
+    grep '^root:' /etc/group >> "$initdir/etc/group"
+    grep '^root:' /etc/shadow >> "$initdir/etc/shadow"
     grep '^sshd:' /etc/passwd >> "$initdir/etc/passwd"
     grep '^sshd:' /etc/group  >> "$initdir/etc/group"
 
@@ -91,4 +94,3 @@ install() {
 
     return 0
 }
-
