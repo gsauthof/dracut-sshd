@@ -74,7 +74,7 @@ install() {
                 sed -i 's/^SSHD_OPTS="[^"]*/& -o "AuthenticationMethods publickey password keyboard-interactive"/' /etc/sysconfig/dracut-sshd
             fi
         else
-            echo SSHD_OPTS=' -o "PermitRootLogin yes" -o "AuthenticationMethods publickey password keyboard-interactive"' >> /etc/sysconfig/dracut-sshd
+            echo SSHD_OPTS=\' -o "PermitRootLogin yes" -o "AuthenticationMethods publickey password keyboard-interactive"\' >> /etc/sysconfig/dracut-sshd
         fi
     fi
     inst_simple "${moddir}/sshd_config" /etc/ssh/sshd_config
