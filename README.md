@@ -2,12 +2,6 @@
 [![Copr Build Status](https://copr.fedorainfracloud.org/coprs/gsauthof/dracut-sshd/package/dracut-sshd/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/gsauthof/dracut-sshd/)
 
 
-#
-# TODO:
-# * document password login option
-#
-
-
 This [Dracut][dracut] module (dracut-sshd) integrates the
 [OpenSSH][ossh] sshd into the [initramfs][iramfs]. It allows for
 remote unlocking of a fully encrypted root filesystem and remote
@@ -346,6 +340,10 @@ possible.
   between `*` and `!` as invalid password field tokens. Meaning
   that only `*` allows public key authentication while `!` blocks
   any login ([see also][i30]).
+- How to make password login possible?
+  A: If you accept the risk of having your root password in the
+  unencrypted initrd, you can add `ALLOW_ROOT_PASSWORD_LOGIN=yes` in the
+  `/etc/sysconfig/dracut-sshd` file.
 
 ## Related Work
 

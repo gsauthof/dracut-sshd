@@ -60,11 +60,17 @@ install() {
     inst_multiple -o /etc/crypto-policies/back-ends/opensshserver.config \
             /etc/crypto-policies/back-ends/openssh-server.config
     inst_simple "${moddir}/sshd.service" "$systemdsystemunitdir/sshd.service"
-    inst_simple "${moddir}/sshd_config" /etc/ssh/sshd_config
 
-    grep '^root:' /etc/passwd >> "$initdir/etc/passwd"
-    grep '^root:' /etc/group >> "$initdir/etc/group"
-    grep '^root:' /etc/shadow >> "$initdir/etc/shadow"
+
+    if [ grep -Fxq "ALLOW_ROOT_PASSWORD_LOGIN=yes" /etc/sysconfig/dracut-sshd ]; then
+        grep '^root:' /etc/passwd >> "$initdir/etc/passwd"
+        grep '^root:' /etc/group >> "$initdir/etc/group"
+        grep '^root:' /etc/shadow >> "$initdir/etc/shadow"
+        inst_simple "${moddir}/sshd_password_config" /etc/ssh/sshd_config
+    else
+        inst_simple "${moddir}/sshd_config" /etc/ssh/sshd_config
+    fi
+
     grep '^sshd:' /etc/passwd >> "$initdir/etc/passwd"
     grep '^sshd:' /etc/group  >> "$initdir/etc/group"
 
