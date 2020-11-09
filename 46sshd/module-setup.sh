@@ -67,9 +67,14 @@ install() {
         grep '^root:' /etc/group >> "$initdir/etc/group"
         grep '^root:' /etc/shadow >> "$initdir/etc/shadow"
         if [ grep -q "^SSHD_OPTS=" /etc/sysconfig/dracut-sshd ];then
-          sed -i 's/^SSHD_OPTS="[^"]*/& -o "PermitRootLogin yes" -o "AuthenticationMethods publickey password keyboard-interactive"/' /etc/sysconfig/dracut-sshd
+            if ! [ grep -q "^SSHD_OPTS=.*PermitRootLogin yes" /etc/sysconfig/dracut-sshd ];then
+                sed -i 's/^SSHD_OPTS="[^"]*/& -o "PermitRootLogin yes"/' /etc/sysconfig/dracut-sshd
+            fi
+            if ! [ grep -q "^SSHD_OPTS=.*AuthenticationMethods publickey password keyboard-interactive" /etc/sysconfig/dracut-sshd ];then
+                sed -i 's/^SSHD_OPTS="[^"]*/& -o "AuthenticationMethods publickey password keyboard-interactive"/' /etc/sysconfig/dracut-sshd
+            fi
         else
-          echo SSHD_OPTS=' -o "PermitRootLogin yes" -o "AuthenticationMethods publickey password keyboard-interactive"' >> /etc/sysconfig/dracut-sshd
+            echo SSHD_OPTS=' -o "PermitRootLogin yes" -o "AuthenticationMethods publickey password keyboard-interactive"' >> /etc/sysconfig/dracut-sshd
         fi
     fi
     inst_simple "${moddir}/sshd_config" /etc/ssh/sshd_config
