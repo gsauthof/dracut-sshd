@@ -89,6 +89,9 @@ install() {
     mkdir -p -m 0755 "$initdir/var/log"
     touch "$initdir/var/log/lastlog"
 
+    inst_simple "${moddir}/motd" /etc/motd
+    inst_simple "${moddir}/profile" /root/.profile
+
     return 0
 }
 
