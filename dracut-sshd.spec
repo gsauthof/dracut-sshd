@@ -5,7 +5,7 @@ Name:       {{{ git_dir_name }}}
 # cf. https://pagure.io/rpkg-util/issue/21#comment-601077
 #Version:    {{{ git_dir_version }}}
 Version:    0.6.2
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    Provide SSH access to initramfs early user space
 URL:        https://github.com/gsauthof/dracut-sshd
 License:    GPLv3+
@@ -33,12 +33,19 @@ cp -r 46sshd %{buildroot}/usr/lib/dracut/modules.d/
 %files
 /usr/lib/dracut/modules.d/46sshd/module-setup.sh
 /usr/lib/dracut/modules.d/46sshd/sshd.service
+/usr/lib/dracut/modules.d/46sshd/motd
+/usr/lib/dracut/modules.d/46sshd/profile
 %config(noreplace) /usr/lib/dracut/modules.d/46sshd/sshd_config
 %doc README.md
 %doc example/20-wired.network
 %doc example/90-networkd.conf
 
 %changelog
+* Sun Nov 22 2020 Akos Balla <akos.balla@sirc.hu> - 0.6.2-2
+- add /etc/dracut-sshd/authorized_keys as an option
+- sssd support
+- Silverblue fix for /var/empty/sshd
+
 * Sat Oct 31 2020 Georg Sauthoff <mail@gms.tf> - 0.6.2-1
 - check whether key is included
 

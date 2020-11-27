@@ -84,13 +84,26 @@ has to adjust the systemd service file:
           -i \
           /usr/lib/dracut/modules.d/46sshd/sshd.service
 
-Make sure that `/root/.ssh/authorized_keys` contains the right
-keys, as it's included in the [initramfs][iramfs]:
+Dracut-sshd includes the first available ssh authorized keys files of the
+following list into the initramfs:
+
+- /root/.ssh/dracut_authorized_keys
+- /etc/dracut-sshd/authorized_keys
+- /root/.ssh/authorized_keys
+
+Note that on Fedora Silverblue `/etc/dracut-sshd/authorized_keys` is needed
+because [rpm-ostree]'s root directory is not reachable during the Dracut module
+install due to all the process happening inm a chroot.
+Thus make sure that either `/root/.ssh/authorized_keys` contains the right keys
+or create one of the alternative keys files, as it's included in the
+[initramfs][iramfs]:
 
     # cat /root/.ssh/authorized_keys
 
 That said, if `/root/.ssh/dracut_authorized_keys` is present
-then it is included, instead.
+then it is included, it takes precedence over
+`/etc/dracut-sshd/authorized_keys`, which takes precedence over
+`/root/.ssh/authorized_keys`.
 
 Of course, our initramfs image needs network support. The simplest
 way to achieve this is to include [networkd][networkd]. To install
@@ -104,7 +117,7 @@ installed as dependency.
 Create a non-[NetworkManager][nm] network config, e.g. via
 [Networkd][networkd]:
 
-    $ cat /etc/systemd/network/20-wired.network 
+    $ cat /etc/systemd/network/20-wired.network
     [Match]
     Name=e*
 
@@ -397,6 +410,7 @@ Related ticket: [Bug 524727 - Dracut + encrypted root + networking (2009)][bug52
 
 ## Tested Environments
 
+- Fedora Silverblue 33
 - Fedora 27 to 32
 - CentOS 7, 8
 - RHEL 8 beta 1
@@ -437,3 +451,4 @@ Related ticket: [Bug 524727 - Dracut + encrypted root + networking (2009)][bug52
 [entropy]: https://github.com/gsauthof/dracut-sshd/issues/12
 [iitems]: https://manpath.be/f32/dracut/050-26.git20200316.fc32.x86_64/5/dracut.conf#L74
 [i30]: https://github.com/gsauthof/dracut-sshd/issues/30
+[rpm-ostree]: https://discussion.fedoraproject.org/t/using-dracut-sshd-to-unlock-a-luks-encrypted-system/23449/6

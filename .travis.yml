@@ -46,4 +46,3 @@ before_install: ./ci/travis.sh before_install
 install:        ./ci/travis.sh install
 
 script:         ./ci/travis.sh script
-
