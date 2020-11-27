@@ -39,6 +39,8 @@ install() {
 
     if [ -e /root/.ssh/dracut_authorized_keys ]; then
         authorized_keys=/root/.ssh/dracut_authorized_keys
+    elif [ -e /etc/dracut-sshd/authorized_keys ]; then
+        authorized_keys=/etc/dracut-sshd/authorized_keys
     else
         authorized_keys=/root/.ssh/authorized_keys
     fi
@@ -62,8 +64,8 @@ install() {
     inst_simple "${moddir}/sshd.service" "$systemdsystemunitdir/sshd.service"
     inst_simple "${moddir}/sshd_config" /etc/ssh/sshd_config
 
-    grep '^sshd:' /etc/passwd >> "$initdir/etc/passwd"
-    grep '^sshd:' /etc/group  >> "$initdir/etc/group"
+    { grep '^sshd:' $dracutsysrootdir/etc/passwd || echo 'sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin' } >> "$initdir/etc/passwd"
+    { grep '^sshd:' $dracutsysrootdir/etc/group  || echo 'sshd:x:74:' } >> "$initdir/etc/group"
 
     # Create privilege separation directory
     # /var/empty/sshd  -> Fedora, CentOS, RHEL
@@ -78,6 +80,10 @@ install() {
             break
         fi
     done
+    # workaround for Silverblue mount points https://github.com/coreos/rpm-ostree/issues/2325
+    if grep ^VARIANT_ID=silverblue$ /etc/os-release > /dev/null ;then
+        mkdir -p -m 0755 "$initdir/var/empty/sshd"
+    fi
 
     systemctl -q --root "$initdir" enable sshd
 
