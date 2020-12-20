@@ -65,7 +65,7 @@ install() {
     grep '^sshd:' /etc/passwd >> "$initdir/etc/passwd"
     grep '^sshd:' /etc/group  >> "$initdir/etc/group"
 
-    # Create privilege seperation directory
+    # Create privilege separation directory
     # /var/empty/sshd  -> Fedora, CentOS, RHEL
     # /var/emtpy       -> Arch, OpenSSH upstream
     # /var/lib/empty   -> Suse
