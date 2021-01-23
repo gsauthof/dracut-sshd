@@ -15,17 +15,17 @@ dracut-sshd, as long as it's configured with systemd and Dracut.
 
 ## TOC
 
-[Example: Open Encrypted Root Filesystem](#example-open-encrypted-root-filesystem)
-[Example: Emergency Shell](#example-emergency-shell)
-[Install](#install)
-[Space Overhead](#space-overhead)
-[Host Keys](#host-keys)
-[Timeout](#timeout)
-[Network](#network)
-[Hardware Alternatives](#hardware-alternatives)
-[FAQ](#faq)
-[Related Work](#related-work)
-[Tested Environments](#tested-environments)
+- [Example: Open Encrypted Root Filesystem](#example-open-encrypted-root-filesystem)
+- [Example: Emergency Shell](#example-emergency-shell)
+- [Install](#install)
+- [Space Overhead](#space-overhead)
+- [Host Keys](#host-keys)
+- [Timeout](#timeout)
+- [Network](#network)
+- [Hardware Alternatives](#hardware-alternatives)
+- [FAQ](#faq)
+- [Related Work](#related-work)
+- [Tested Environments](#tested-environments)
 
 ## Example: Open Encrypted Root Filesystem
 
