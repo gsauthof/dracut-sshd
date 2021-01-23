@@ -346,9 +346,10 @@ possible.
 
 ## Related Work
 
-There is [dracut-crypt-ssh][cryptssh] module which aims to
-provide SSH access for remotely unlocking an encrypted LUKS
-volume. Main differences to dracut-sshd:
+There is the [unmaintained][cryptssh-unm] (since 2019 or earlier)
+[dracut-crypt-ssh][cryptssh] module which aimed to provide SSH
+access for remotely unlocking an encrypted LUKS volume. Main
+differences to dracut-sshd:
 
 - uses [Dropbear][dropbear] instead of [OpenSSH][ossh] sshd (cf. the Space
   Overhead Section for the implications)
@@ -362,8 +363,8 @@ volume. Main differences to dracut-sshd:
   dangerous to use, e.g. when the password prompt times out the
   password is echoed to the console
 
-A [dracut-crypt-ssh pull request][cryptssh-uwe] (open as
-of 2018) for optionally using OpenSSH's sshd instead of Dropbear.
+A [dracut-crypt-ssh pull request][cryptssh-uwe] (open since 2017,
+still open as of 2021) for optionally using OpenSSH's sshd instead of Dropbear.
 Main differences to dracut-sshd:
 
 - doesn't use systemd for starting/stopping the sshd daemon
@@ -387,22 +388,37 @@ questionable helpers removed. It creates a systemd unit file for
 Dropbear although it still explicitly starts/stops it via hook
 files instead of making use of the systemd dependency features.
 
+The [ArchWiki dm-crypt page][arch] lists two initramfs hooks for
+remote access.  Both don't use [Dracut][dracut] nor systemd,
+though. Also, they use Dropbear and Tinyssh as ssh daemon.
+
 [Clevis][clevis], an automatic decryption framework, has some
 [LUKS][luks] unlocking and Dracut support. Looking at its documentation,
 when it comes to automatic LUKS unlocking, the LUKS passphrase is
 stored encrypted in the LUKS header. Clevis then decrypts it
 using an external service/hardware (e.g. a [TPM] module).
 
-The [ArchWiki dm-crypt page][arch] lists two initramfs hooks for
-remote access.  Both don't use [Dracut][dracut] nor systemd,
-though. Also, they use Dropbear and Tinyssh as ssh daemon.
+With version 248 (i.e. available since early 2021 or so),
+[systemd integrated some automatic LUKS2 volume unlocking
+features][systemd248]. Similar to Clevis it supports TPM2 modules.
+In addition, it also supports smart cards and FIDO2/hmac-secret
+devices. At least some of those FIDO2 devices seem to support
+non-interactive HMAC computation and thus allow to auto-unlock
+LUKS volumes as long as the enrolled FIDO2 device is connected.
 
-Related ticket: [Bug 524727 - Dracut + encrypted root + networking (2009)][bug524727]
+Although enterprise motherboard and server vendors often
+integrate unpleasant BMCs (cf. the [Hardware Alternatives
+Section](#hardware-alternatives)), a hardware solution for remote
+access to early boot doesn't have to be awful. For example, there is
+the open and DIY [Pi-KVM][pikvm] project which looks quite
+promising.
+
+Related Fedora ticket: [Bug 524727 - Dracut + encrypted root + networking (2009)][bug524727]
 
 ## Tested Environments
 
 - Fedora Silverblue 33
-- Fedora 27 to 32
+- Fedora 27 to 33
 - CentOS 7, 8
 - RHEL 8 beta 1
 - Gentoo (by a contributor)
@@ -417,6 +433,7 @@ Related ticket: [Bug 524727 - Dracut + encrypted root + networking (2009)][bug52
 [copr]: https://copr.fedorainfracloud.org/coprs/gsauthof/dracut-sshd/
 [cryptssh]: https://github.com/dracut-crypt-ssh/dracut-crypt-ssh
 [cryptssh-uwe]: https://github.com/dracut-crypt-ssh/dracut-crypt-ssh/pull/17
+[cryptssh-unm]: https://github.com/dracut-crypt-ssh/dracut-crypt-ssh/issues/43
 [dracut]: https://dracut.wiki.kernel.org/index.php/Main_Page
 [dracut-cmdline]: https://manpath.be/f32/7/dracut.cmdline
 [dropbear]: https://en.wikipedia.org/wiki/Dropbear_(software)
@@ -434,6 +451,7 @@ Related ticket: [Bug 524727 - Dracut + encrypted root + networking (2009)][bug52
 [ossh]: https://en.wikipedia.org/wiki/OpenSSH
 [pwagent]: https://manpath.be/f32/1/systemd-tty-ask-password-agent
 [systemd]: https://en.wikipedia.org/wiki/Systemd
+[systemd248]: http://0pointer.net/blog/unlocking-luks2-volumes-with-tpm2-fido2-pkcs11-security-hardware-on-systemd-248.html
 [switchroot]: https://www.kernel.org/doc/Documentation/filesystems/ramfs-rootfs-initramfs.txt
 [tmpfs]: https://en.wikipedia.org/wiki/Tmpfs
 [tpm]: https://en.wikipedia.org/wiki/Trusted_Platform_Module
@@ -443,3 +461,4 @@ Related ticket: [Bug 524727 - Dracut + encrypted root + networking (2009)][bug52
 [iitems]: https://manpath.be/f32/dracut/050-26.git20200316.fc32.x86_64/5/dracut.conf#L74
 [i30]: https://github.com/gsauthof/dracut-sshd/issues/30
 [rpm-ostree]: https://discussion.fedoraproject.org/t/using-dracut-sshd-to-unlock-a-luks-encrypted-system/23449/6
+[pikvm]: https://github.com/pikvm/pikvm
