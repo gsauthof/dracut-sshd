@@ -80,8 +80,8 @@ install() {
             break
         fi
     done
-    # workaround for Silverblue mount points https://github.com/coreos/rpm-ostree/issues/2325
-    if grep ^VARIANT_ID=silverblue$ /etc/os-release > /dev/null; then
+    # workaround for Silverblue (in general for ostree based os)
+    if grep ^OSTREE_VERSION= /etc/os-release > /dev/null; then
         mkdir -p -m 0755 "$initdir/var/empty/sshd"
     fi
 
