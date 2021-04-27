@@ -68,13 +68,14 @@ install() {
     { grep '^sshd:' $dracutsysrootdir/etc/group  || echo 'sshd:x:74:'; } >> "$initdir/etc/group"
 
     # Create privilege separation directory
-    # /var/empty/sshd  -> Fedora, CentOS, RHEL
-    # /var/emtpy       -> Arch, OpenSSH upstream
-    # /var/lib/empty   -> Suse
-    # /run/sshd        -> Debian
-    # /var/chroot/ssh  -> Void Linux
+    # /var/empty/sshd       -> Fedora, CentOS, RHEL
+    # /usr/share/empty.sshd -> Fedora >= 34
+    # /var/emtpy            -> Arch, OpenSSH upstream
+    # /var/lib/empty        -> Suse
+    # /run/sshd             -> Debian
+    # /var/chroot/ssh       -> Void Linux
     local d
-    for d in /var/empty/sshd /var/empty /var/lib/empty /run/sshd /var/chroot/ssh ; do
+    for d in /var/empty/sshd /usr/share/empty.sshd /var/empty /var/lib/empty /run/sshd /var/chroot/ssh ; do
         if [ -d "$d" ]; then
             mkdir -p -m 0755 "$initdir$d"
             break
