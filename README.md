@@ -346,11 +346,13 @@ possible.
 ## FAQ
 
 - How to make the early boot sshd listen on a non-standard port?
+
   A: If you really [want to do that][port] you can provide a
   `/etc/sysconfig/dracut-sshd` that defines `SSHD_OPTS`
   ([see also][port]).
 - Why does sshd hangs during early-boot when running dracut-sshd
   inside a virtual machine (VM)?
+
   A: Most likely the VM guest is short of entropy and thus sshd
   blocks during startup (without logging a warning) for an
   indefinite amount of time. Possible up to the systemd service
@@ -359,6 +361,7 @@ possible.
   examples of how to do this][entropy]).
 - Why do I get `Permission denied (publickey)` although the same
   authorized key works after the system is booted?
+
   A: This can be caused by a root account that is locked with `!`
   instead of `*`. In that case it's enough to change the lock
   method (or set a password) and regenerate the initramfs.
@@ -373,7 +376,7 @@ possible.
 - How do I make it work on Ubuntu 20.04?
 
   A: There are some pitfalls on Ubuntu. Firstly, dracut isn't
-  installed by default (fix: `apt install dracut
+  installed by default (fix: `apt install dracut-core
   dracut-network`). Secondly, dracut isn't a first class citizen
   on Ubuntu (i.e. it's only included in the universe repository,
   not in the main repository). As a result, the default dracut
@@ -474,6 +477,7 @@ Related Fedora ticket: [Bug 524727 - Dracut + encrypted root + networking (2009)
 - Gentoo (by a contributor)
 - SUSE (by a contributor)
 - Arch (by a contributor)
+- Ubuntu 20.04 LTS
 
 [arch]: https://wiki.archlinux.org/index.php/Dm-crypt/Specialties#Remote_unlocking_.28hooks:_netconf.2C_dropbear.2C_tinyssh.2C_ppp.29
 [bls]: https://systemd.io/BOOT_LOADER_SPECIFICATION
