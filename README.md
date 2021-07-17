@@ -156,8 +156,21 @@ Finally regenerate the initramfs:
 
     # dracut -f -v
 
+Note that Ubuntu's dracut defaults to an initramfs filename that
+is incompatible with Ubuntu's grub default initrd settings ... m(
+Thus, on Ubuntu one has to explicitly specify the initramfs filename like this:
+
+    # dracut -f -v /boot/initrd.img-$(uname -r)
+
 Verify that this `sshd` module is included. Either via inspecting the verbose
-output or via `lsinitrd`. Reboot.
+output or via `lsinitrd`, e.g.:
+
+    # lsinitrd | grep 'authorized\|bin/sshd\|network/20'
+    -rw-r--r--   1 root     root          119 Jul 17 15:08 etc/systemd/network/20-wired.network
+    -rw-------   1 root     root           99 Jul 17 17:04 root/.ssh/authorized_keys
+    -rwxr-xr-x   1 root     root       876328 Jul 17 17:04 usr/sbin/sshd
+
+Finally, reboot.
 
 
 ## Space Overhead
@@ -357,6 +370,29 @@ possible.
   between `*` and `!` as invalid password field tokens. Meaning
   that only `*` allows public key authentication while `!` blocks
   any login ([see also][i30]).
+- How do I make it work on Ubuntu 20.04?
+
+  A: There are some pitfalls on Ubuntu. Firstly, dracut isn't
+  installed by default (fix: `apt install dracut
+  dracut-network`). Secondly, dracut isn't a first class citizen
+  on Ubuntu (i.e. it's only included in the universe repository,
+  not in the main repository). As a result, the default dracut
+  initramfs filename doesn't match what Ubuntu uses in its
+  Grub configuration. Thus, you have to explicitly specify
+  the right one (i.e. `/boot/initrd.img-$(uname -r)`) in the
+  `dracut` and `lsinitrd` commands.
+- How do I debug dracut-sshd issues in the early boot
+  environment?
+
+  A: You start by dropping into the dracut emergency shell and
+  looking at the journal and status of the involved services.
+  For example, via `systemctl status sshd.service`, `journalctl
+  -u sshd` etc. You drop into the emergency shell by adding
+  `rd.break` (and possibly `rd.shell`) to kernel parameter
+  command-line. Of course, you need some kind of console
+  access when doing such debugging. Using a virtual machine
+  usually is sufficient to reproduce issues which simplifies
+  things.
 
 ## Related Work
 

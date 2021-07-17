@@ -4,6 +4,9 @@ Documentation=man:sshd(8) man:sshd_config(5)
 DefaultDependencies=no
 Before=cryptsetup.target
 
+# required on Ubuntu 20.04
+After=systemd-tmpfiles-setup.service
+
 [Service]
 # With `Type=notify` the sshd service is started in a reliable
 # and robust way but it requires an sshd with systemd support.

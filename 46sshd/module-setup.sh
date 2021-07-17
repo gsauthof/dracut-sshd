@@ -72,12 +72,15 @@ install() {
     # /usr/share/empty.sshd -> Fedora >= 34
     # /var/emtpy            -> Arch, OpenSSH upstream
     # /var/lib/empty        -> Suse
-    # /run/sshd             -> Debian
+    # /run/sshd             -> Debian, Ubuntu
     # /var/chroot/ssh       -> Void Linux
     local d
     for d in /var/empty/sshd /usr/share/empty.sshd /var/empty /var/lib/empty /run/sshd /var/chroot/ssh ; do
         if [ -d "$d" ]; then
             mkdir -p -m 0755 "$initdir$d"
+
+            # redundant on most distriubtions, but required on Ubuntu 20.04.2
+            echo "d $d 0755 root root -" > "$initdir$tmpfilesdir/sshd-tmpfiles.conf"
             break
         fi
     done
