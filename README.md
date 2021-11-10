@@ -210,9 +210,7 @@ doesn't really pay off to safe a few mega-/kilobytes in the
 initramfs. A few KiBs could be saved via switching from
 [OpenSSH][ossh]'s sshd to something like [Dropbear][dropbear],
 but such an alternative sshd server is likely less well audited
-for security issues and supports less features (e.g. as of 2018
-[Dropbear doesn't support public authentication with
-ssh-ed25519][drop25519] keys).
+for security issues and supports less features.
 
 Last but not least, in times where even embedded systems feature
 hundreds of megabytes RAM, temporarily occupying a few extra
