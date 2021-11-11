@@ -210,9 +210,11 @@ doesn't really pay off to safe a few mega-/kilobytes in the
 initramfs. A few KiBs could be saved via switching from
 [OpenSSH][ossh]'s sshd to something like [Dropbear][dropbear],
 but such an alternative sshd server is likely less well audited
-for security issues and supports less features (e.g. as of 2018
-[Dropbear doesn't support public authentication with
-ssh-ed25519][drop25519] keys).
+for security issues and supports less features (e.g. ssh-ed25519
+public key authentication was only [added as late as
+2020][drop25519], and, as of 2021, there are some [interoperability
+issues][drop25519b] and [ed25519-sk keys aren't
+supported][dropsk]).
 
 Last but not least, in times where even embedded systems feature
 hundreds of megabytes RAM, temporarily occupying a few extra
@@ -491,7 +493,9 @@ Related Fedora ticket: [Bug 524727 - Dracut + encrypted root + networking (2009)
 [dracut]: https://dracut.wiki.kernel.org/index.php/Main_Page
 [dracut-cmdline]: https://manpath.be/f32/7/dracut.cmdline
 [dropbear]: https://en.wikipedia.org/wiki/Dropbear_(software)
-[drop25519]: https://github.com/pts/pts-dropbear
+[drop25519]: https://github.com/mkj/dropbear/pull/91
+[drop25519b]: https://github.com/mkj/dropbear/issues/136#issuecomment-913134728
+[dropsk]: https://github.com/mkj/dropbear/issues/135
 [ifcfg]: https://www.centos.org/docs/5/html/Deployment_Guide-en-US/s1-networkscripts-interfaces.html
 [iramfs]: https://en.wikipedia.org/wiki/Initial_ramdisk
 [kvm]: https://en.wikipedia.org/wiki/KVM_switch#Remote_KVM_devices
