@@ -461,6 +461,10 @@ devices. At least some of those FIDO2 devices seem to support
 non-interactive HMAC computation and thus allow to auto-unlock
 LUKS volumes as long as the enrolled FIDO2 device is connected.
 
+If your threat model goes beyond what is described in the [Host
+Keys](#host-keys) Section, you have to look into [authenticated
+boot and disk encryption][authboot].
+
 Although enterprise motherboard and server vendors often
 integrate unpleasant BMCs (cf. the [Hardware Alternatives
 Section](#hardware-alternatives)), a hardware solution for remote
@@ -473,7 +477,7 @@ Related Fedora ticket: [Bug 524727 - Dracut + encrypted root + networking (2009)
 ## Tested Environments
 
 - Fedora Silverblue 33
-- Fedora 27 to 33
+- Fedora 27 to 35
 - CentOS 7, 8
 - RHEL 8 beta 1
 - Gentoo (by a contributor)
@@ -520,3 +524,4 @@ Related Fedora ticket: [Bug 524727 - Dracut + encrypted root + networking (2009)
 [i30]: https://github.com/gsauthof/dracut-sshd/issues/30
 [rpm-ostree]: https://discussion.fedoraproject.org/t/using-dracut-sshd-to-unlock-a-luks-encrypted-system/23449/6
 [pikvm]: https://github.com/pikvm/pikvm
+[authboot]: https://0pointer.net/blog/authenticated-boot-and-disk-encryption-on-linux.html
