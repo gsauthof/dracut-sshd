@@ -4,7 +4,7 @@ Name:       {{{ git_dir_name }}}
 # the 'lead' parameter, anyways
 # cf. https://pagure.io/rpkg-util/issue/21#comment-601077
 #Version:    {{{ git_dir_version }}}
-Version:    0.6.3
+Version:    0.6.4
 Release:    1%{?dist}
 Summary:    Provide SSH access to initramfs early user space
 URL:        https://github.com/gsauthof/dracut-sshd
@@ -41,6 +41,9 @@ cp -r 46sshd %{buildroot}/usr/lib/dracut/modules.d/
 %doc example/90-networkd.conf
 
 %changelog
+* Sun May 7 2023 Georg Sauthoff <mail@gms.tf> - 0.6.4-1
+- fix motd
+
 * Sat May 1 2021 Georg Sauthoff <mail@gms.tf> - 0.6.3-1
 - fix privilege separation directory for Fedora 34
 
