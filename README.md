@@ -1,4 +1,3 @@
-[![Build Status](https://travis-ci.org/gsauthof/dracut-sshd.svg?branch=master)](https://travis-ci.org/gsauthof/dracut-sshd)
 [![Copr Build Status](https://copr.fedorainfracloud.org/coprs/gsauthof/dracut-sshd/package/dracut-sshd/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/gsauthof/dracut-sshd/)
 
 This [Dracut][dracut] module (dracut-sshd) integrates the
