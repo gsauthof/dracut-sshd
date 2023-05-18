@@ -89,6 +89,11 @@ install() {
         mkdir -p -m 0755 "$initdir/var/empty/sshd"
     fi
 
+    # workaround for Ubuntu not extracing /run from initramfs
+    if grep ^ID=ubuntu /etc/os-release > /dev/null; then
+        sed -i '/Before=cryptsetup.target/a After=systemd-tmpfiles-setup.service     # required on Ubuntu 20.04' "$systemdsystemunitdir/sshd.service"
+    fi
+
     systemctl -q --root "$initdir" enable sshd
 
     # Add command to unlock luks volumes to bash history for easier use
