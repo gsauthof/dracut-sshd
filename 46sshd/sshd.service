@@ -29,5 +29,9 @@ KillMode=process
 Restart=on-failure
 RestartSec=42s
 
+# Create privilege separation directory /run/sshd for Debian/Ubuntu
+RuntimeDirectory=sshd
+RuntimeDirectoryMode=0755
+
 [Install]
 WantedBy=sysinit.target
