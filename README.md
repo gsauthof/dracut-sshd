@@ -480,10 +480,14 @@ Related Fedora ticket: [Bug 524727 - Dracut + encrypted root + networking (2009)
 - CentOS 7, 8
 - CentOS Stream 9 (by a contributor)
 - RHEL 8 beta 1
+- Rocky Linux 9 (by a contributor)
 - Gentoo (by a contributor)
 - SUSE (by a contributor)
 - Arch (by a contributor)
 - Ubuntu 20.04 LTS
+- Debian 12 (by a contributor)
+
+
 
 [arch]: https://wiki.archlinux.org/index.php/Dm-crypt/Specialties#Remote_unlocking_.28hooks:_netconf.2C_dropbear.2C_tinyssh.2C_ppp.29
 [bls]: https://systemd.io/BOOT_LOADER_SPECIFICATION
