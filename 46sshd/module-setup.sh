@@ -72,26 +72,16 @@ install() {
     # /usr/share/empty.sshd -> Fedora >= 34
     # /var/emtpy            -> Arch, OpenSSH upstream
     # /var/lib/empty        -> Suse
-    # /run/sshd             -> Debian, Ubuntu
     # /var/chroot/ssh       -> Void Linux
     local d
-    for d in /var/empty/sshd /usr/share/empty.sshd /var/empty /var/lib/empty /run/sshd /var/chroot/ssh ; do
+    for d in /var/empty/sshd /usr/share/empty.sshd /var/empty /var/lib/empty /var/chroot/ssh ; do
         if [ -d "$d" ]; then
             mkdir -p -m 0755 "$initdir$d"
-
-            # redundant on most distriubtions, but required on Ubuntu 20.04.2
-            echo "d $d 0755 root root -" > "$initdir$tmpfilesdir/sshd-tmpfiles.conf"
-            break
         fi
     done
     # workaround for Silverblue (in general for ostree based os)
     if grep ^OSTREE_VERSION= /etc/os-release > /dev/null; then
         mkdir -p -m 0755 "$initdir/var/empty/sshd"
-    fi
-
-    # workaround for Ubuntu not extracing /run from initramfs
-    if grep ^ID=ubuntu /etc/os-release > /dev/null; then
-        sed -i '/Before=cryptsetup.target/a After=systemd-tmpfiles-setup.service     # required on Ubuntu 20.04' "$systemdsystemunitdir/sshd.service"
     fi
 
     systemctl -q --root "$initdir" enable sshd
