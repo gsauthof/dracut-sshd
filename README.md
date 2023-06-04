@@ -480,7 +480,7 @@ Related Fedora ticket: [Bug 524727 - Dracut + encrypted root + networking (2009)
 - CentOS 7, 8
 - CentOS Stream 9 (by a contributor)
 - RHEL 8 beta 1
-- Rocky Linux 9 (by a contributor)
+- Rocky Linux 8.8, 9 (by a contributor)
 - Gentoo (by a contributor)
 - SUSE (by a contributor)
 - Arch (by a contributor)
