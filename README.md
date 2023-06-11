@@ -417,19 +417,13 @@ differences to dracut-sshd:
   dangerous to use, e.g. when the password prompt times out the
   password is echoed to the console
 
-A [dracut-crypt-ssh pull request][cryptssh-uwe] (open since 2017,
-still open as of 2021) for optionally using OpenSSH's sshd instead of Dropbear.
-Main differences to dracut-sshd:
+In 2017, a [dracut-crypt-ssh pull request][cryptssh-uwe] added
+support for optionally using OpenSSH's sshd instead of Dropbear,
+without changing the other differences. It was closed without
+being merged in 2021.
 
-- doesn't use systemd for starting/stopping the sshd daemon
-- generates a new set of host keys, by default
-- listens on a non-standard port for ssh, by default
-- arguably more complex than dracut-sshd - certainly more lines
-  of code and some options
-- unlock command still present
-- pull-request evolved via additional commits without cleanup rebases
-
-There is [mk-fg/dracut-crypt-sshd][mkfg] which was marked
+There are also some other dracut modules that use Dropbear:
+[mk-fg/dracut-crypt-sshd][mkfg] which was marked
 deprecated in 2016 in favour of the above dracut-crypt-ssh. It
 uses Dropbear and some console hacks instead of
 `systemd-tty-ask-password-agent`.
@@ -450,7 +444,14 @@ though. Also, they use Dropbear and Tinyssh as ssh daemon.
 [LUKS][luks] unlocking and Dracut support. Looking at its documentation,
 when it comes to automatic LUKS unlocking, the LUKS passphrase is
 stored encrypted in the LUKS header. Clevis then decrypts it
-using an external service/hardware (e.g. a [TPM] module).
+using an external service/hardware (e.g. a [Tang][tang] server
+or a [TPM] module).
+
+Similar to Clevis, [Mandos][mandos] also implements a framework
+for unattended LUKS unlocking. Unlike Clevis, it primarily
+targets Debian and doesn't support TPM. That means for unlocking
+the Mandos client fetches the asymmetrically encrypted LUKS
+password from a Mandos server.
 
 With version 248 (i.e. available since early 2021 or so),
 [systemd integrated some automatic LUKS2 volume unlocking
@@ -529,3 +530,5 @@ Related Fedora ticket: [Bug 524727 - Dracut + encrypted root + networking (2009)
 [rpm-ostree]: https://discussion.fedoraproject.org/t/using-dracut-sshd-to-unlock-a-luks-encrypted-system/23449/6
 [pikvm]: https://github.com/pikvm/pikvm
 [authboot]: https://0pointer.net/blog/authenticated-boot-and-disk-encryption-on-linux.html
+[tang]: https://github.com/latchset/tang
+[mandos]: https://www.recompile.se/mandos
