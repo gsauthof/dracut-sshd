@@ -4,7 +4,7 @@ Name:       {{{ git_dir_name }}}
 # the 'lead' parameter, anyways
 # cf. https://pagure.io/rpkg-util/issue/21#comment-601077
 #Version:    {{{ git_dir_version }}}
-Version:    0.6.6
+Version:    0.6.7
 Release:    1%{?dist}
 Summary:    Provide SSH access to initramfs early user space
 URL:        https://github.com/gsauthof/dracut-sshd
@@ -20,6 +20,21 @@ initramfs. It allows for remote unlocking of a fully encrypted
 root filesystem and remote access to the Dracut emergency shell
 (i.e. early userspace).
 
+%package auto-networkmanager
+Summary:    Enables NetworkManager for sshd during initramfs
+Requires:   dracut-sshd
+Requires:   NetworkManager
+
+%description auto-networkmanager
+This module enables dracut network-manager settings for dracut-sshd.
+
+- If no configuration is provided it uses DHCP to bring up ethernet
+  in the same manner as rootfs NetworkManager.
+- Cleanly tears down networking prior to switchroot to avoid conflicts
+  thereby allowing the OS full control of networking config.
+- Network settings could be overriden by copying ifcfg or nmconnection
+  settings into the initrd. e.g. static IP's
+
 %prep
 {{{ git_dir_setup_macro }}}
 
@@ -30,6 +45,7 @@ root filesystem and remote access to the Dracut emergency shell
 mkdir -p %{buildroot}/usr/lib/dracut/modules.d
 cp -r 46sshd %{buildroot}/usr/lib/dracut/modules.d/
 cp -r 99sshd-shadow-fixup %{buildroot}/usr/lib/dracut/modules.d/
+cp -r 99sshd-auto-networkmanager %{buildroot}/usr/lib/dracut/modules.d/
 
 %files
 /usr/lib/dracut/modules.d/46sshd/module-setup.sh
@@ -42,7 +58,17 @@ cp -r 99sshd-shadow-fixup %{buildroot}/usr/lib/dracut/modules.d/
 %doc example/20-wired.network
 %doc example/90-networkd.conf
 
+%files auto-networkmanager
+/usr/lib/dracut/modules.d/99sshd-auto-networkmanager/module-setup.sh
+
 %changelog
+* Wed Jun 14 2023 Warren Togami <wtogami@gmail.com> - 0.6.7-1
+- dracut-sshd-auto-networkmanager subpackage
+  99sshd-auto-networkmanager adjusts nm-initrd.service to run for dracut-sshd.
+- If config is lacking auto DHCP ethernet in the same manner as rootfs NetworkManager.
+- Clean network teardown prior to switchroot avoids conflicts and gives OS full control.
+- Settings could be overriden by copying ifcfg or nmconnection settings into the initrd.
+
 * Wed Jun 14 2023 Warren Togami <wtogami@gmail.com> - 0.6.6-1
 - 99sshd-shadow-fixup enables ssh pubkey login with disabled password as intended
 
