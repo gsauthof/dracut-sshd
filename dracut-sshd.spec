@@ -62,6 +62,9 @@ cp -r 99sshd-networkmanager %{buildroot}/usr/lib/dracut/modules.d/
 /usr/lib/dracut/modules.d/99sshd-networkmanager/module-setup.sh
 
 %changelog
+* Thu Jun 15 2023 Warren Togami <wtogami@gmail.com>
+- silence 99sshd-shadow-fixup because missing /etc/shadow is valid
+
 * Wed Jun 14 2023 Warren Togami <wtogami@gmail.com> - 0.6.7-1
 - dracut-sshd-networkmanager subpackage
   99sshd-networkmanager adjusts nm-initrd.service to run for dracut-sshd.

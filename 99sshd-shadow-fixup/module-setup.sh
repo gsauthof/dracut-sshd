@@ -19,7 +19,7 @@ depends() {
 install() {
     # /etc/shadow "root:!:" allows for ssh pubkey logins on a normal system. 
     # dracut-sshd "UsePAM no" is incompatible with a '!'. Fixup to '*' which allows ssh pubkey login to work as intended.
-    grep '^root:!:' "$initdir/etc/shadow" -q && sed -i -e 's/^root:!:/root:*:/' "$initdir/etc/shadow"
+    test -f "$initdir/etc/shadow" && grep '^root:!:' "$initdir/etc/shadow" -q && sed -i -e 's/^root:!:/root:*:/' "$initdir/etc/shadow"
 
     return 0
 }
