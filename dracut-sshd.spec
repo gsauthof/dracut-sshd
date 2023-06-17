@@ -31,6 +31,7 @@ mkdir -p %{buildroot}/usr/lib/dracut/modules.d
 cp -r 46sshd %{buildroot}/usr/lib/dracut/modules.d/
 
 %files
+%dir /usr/lib/dracut/modules.d/46sshd/
 /usr/lib/dracut/modules.d/46sshd/module-setup.sh
 /usr/lib/dracut/modules.d/46sshd/sshd.service
 /usr/lib/dracut/modules.d/46sshd/motd
@@ -41,6 +42,9 @@ cp -r 46sshd %{buildroot}/usr/lib/dracut/modules.d/
 %doc example/90-networkd.conf
 
 %changelog
+* Sat Jun 17 2023 Warren Togami <wtogami@gmail.com>
+- own directory to ensure clean uninstalls
+
 * Sat May 27 2023 Georg Sauthoff <mail@gms.tf> - 0.6.5-1
 - eliminate tmpfiles and fix Debian/Ubuntu support
 
