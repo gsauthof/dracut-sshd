@@ -25,6 +25,7 @@ dracut-sshd, as long as it's configured with systemd and Dracut.
 - [FAQ](#faq)
 - [Related Work](#related-work)
 - [Tested Environments](#tested-environments)
+- [Packages](#packages)
 
 ## Example: Open Encrypted Root Filesystem
 
@@ -121,12 +122,14 @@ installed as dependency.
 Create a non-[NetworkManager][nm] network config, e.g. via
 [Networkd][networkd]:
 
-    $ cat /etc/systemd/network/20-wired.network
-    [Match]
-    Name=e*
+```
+$ cat /etc/systemd/network/20-wired.network
+[Match]
+Name=e*
 
-    [Network]
-    DHCP=ipv4
+[Network]
+DHCP=ipv4
+```
 
 Adjust the `Name=`, if necessary.
 
@@ -136,9 +139,11 @@ isn't enabled, by default, either. Thus, you have to configure
 Dracut for networkd (cf. the [install_items][iitems] and
 [add_dracutmodules][addmod] directives). Example:
 
-    # cat /etc/dracut.conf.d/90-networkd.conf
-    install_items+=" /etc/systemd/network/20-wired.network "
-    add_dracutmodules+=" systemd-networkd "
+```
+# cat /etc/dracut.conf.d/90-networkd.conf
+install_items+=" /etc/systemd/network/20-wired.network "
+add_dracutmodules+=" systemd-networkd "
+```
 
 Alternatively, early boot network connectivity can be configured
 by other means (i.e.  kernel parameters, see below).  However,
@@ -374,6 +379,38 @@ possible.
   between `*` and `!` as invalid password field tokens. Meaning
   that only `*` allows public key authentication while `!` blocks
   any login ([see also][i30]).
+- Can I use dracut-sshd when my root account is locked?
+
+  A: Yes, you can.
+  However, you have to make sure that your account isn't locked
+  with a `!` in `/etc/shadow`. If it is locked like that, you
+  have to lock it differently, e.g. via `usermod -p '*' root`
+  or simply set a strong password for the root user, followed
+  by `dracut -f`.
+  See also the previous question for additional details.
+- Does dracut-sshd only work with networkd?
+
+  A: No, it doesn't.
+  Dracut-sshd is network service agnostic.
+  It just requires the network being online during early boot.
+  Depending on the distribution, there might be different
+  alternatives available for bringing network
+  interfaces up early, such as Systemd's networkd, legacy network
+  scripts, NetworkManager etc.
+  A given distribution and release might support one of those
+  or many, and default to one of them when the `network` dracut
+  module is included.
+  Besides selecting a specific dracut network module, there are
+  also dracut cmdline parameters for configuring network options
+  and addresses.
+  Depending on your concrete network setup and distribution, a
+  certain network module might be more suitable than another.
+  In general, it isn't an issue to use one network service during
+  early boot and another for late boot (e.g. networkd and
+  NetworkManager).
+  The same goes for configurations, e.g. perhaps for early boot a
+  simple DHCP setups makes most sense while in late boot you have a
+  more complicated network configuration.
 - How do I make it work on Ubuntu 20.04?
 
   A: There are some pitfalls on Ubuntu. Firstly, dracut isn't
@@ -477,17 +514,25 @@ Related Fedora ticket: [Bug 524727 - Dracut + encrypted root + networking (2009)
 ## Tested Environments
 
 - Fedora Silverblue 33
-- Fedora 27 to 37
+- Fedora 27 to 38
 - CentOS 7, 8
 - CentOS Stream 9 (by a contributor)
 - RHEL 8 beta 1
 - Rocky Linux 8.8, 9 (by a contributor)
 - Gentoo (by a contributor)
 - SUSE (by a contributor)
+- openSUSE Leap 15.5
 - Arch (by a contributor)
 - Ubuntu 20.04 LTS
 - Debian 12 (by a contributor)
 
+
+## Packages
+
+- [Copr][copr] - for Fedora, EPEL (i.e. RHEL or RHEL clones such
+  as AlmaLinux or Rocky)
+- [openSUSE](https://build.opensuse.org/package/show/openSUSE:Factory/dracut-sshd)
+- [Arch AUR](https://aur.archlinux.org/packages/dracut-sshd-git)
 
 
 [arch]: https://wiki.archlinux.org/index.php/Dm-crypt/Specialties#Remote_unlocking_.28hooks:_netconf.2C_dropbear.2C_tinyssh.2C_ppp.29
