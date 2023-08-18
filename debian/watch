@@ -1,0 +1,6 @@
+version=4
+
+# Fetch packages from GitHub hosted projects.
+opts="filenamemangle=s%(?:.*?)?v?(@ANY_VERSION@@ARCHIVE_EXT@)%@PACKAGE@-$1%" \
+    https://github.com/gsauthof/dracut-sshd/tags \
+    (?:.*?/)v?@ANY_VERSION@@ARCHIVE_EXT@

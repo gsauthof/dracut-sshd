@@ -1,0 +1,2 @@
+diff-ignore
+extend-diff-ignore = ".gitlab-ci.yml|.idea|.gitignore"
