@@ -1,0 +1,20 @@
+Source: dracut-sshd
+Section: contrib/utils
+Priority: optional
+Maintainer: Enneamer <enenamer@enneamer.is>
+Rules-Requires-Root: no
+Build-Depends:
+ debhelper-compat (= 13),
+Standards-Version: 4.6.2
+Homepage: https://github.com/gsauthof/dracut-sshd
+Vcs-Browser: https://github.com/gsauthof/dracut-sshd
+Vcs-Git: https://github.com/gsauthof/dracut-sshd.git
+
+Package: dracut-sshd
+Architecture: all
+Depends:
+ dracut,
+ openssh-client,
+ ${misc:Depends},
+Description: Dracut integration of OpenSSH
+ A dracut module that integrates OpenSSH into initramfs.

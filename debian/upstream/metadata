@@ -1,0 +1,10 @@
+# Example file for upstream/metadata.
+# See https://wiki.debian.org/UpstreamMetadata for more info/fields.
+# Below an example based on a github project.
+
+Bug-Database: https://github.com/gsauthof/dracut-sshd/issues
+Bug-Submit: https://github.com/gsauthof/dracut-sshd/issues/new
+Changelog: https://github.com/gsauthof/dracut-sshd/blob/master/CHANGES
+Documentation: https://github.com/gsauthof/dracut-sshd/wiki
+Repository-Browse: https://github.com/gsauthof/dracut-sshd
+Repository: https://github.com/gsauthof/dracut-sshd.git

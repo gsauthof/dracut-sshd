@@ -1,0 +1,26 @@
+#!/bin/sh
+
+set -e
+
+mk_initrd() {
+
+    if ls /boot/vmlinu[zx]-* >/dev/null 2>&1; then
+
+    # Regenerate initramfs for all kernel that are installed
+    for kversion in `ls /boot/vmlinu[zx]-* | sed -e 's#/boot/vmlinu.-##'`; do
+        /etc/kernel/postinst.d/dracut $kversion
+    done
+    fi
+}
+
+if [ "x$1" != xtriggered ]; then
+    # activate trigger
+    if dpkg-trigger --no-await update-initramfs; then
+        echo "update-initramfs: deferring update (trigger activated)"
+        exit 0
+    fi
+else
+    mk_initrd
+fi
+
+#DEBHELPER#

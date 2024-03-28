@@ -534,7 +534,6 @@ Related Fedora ticket: [Bug 524727 - Dracut + encrypted root + networking (2009)
 - [openSUSE](https://build.opensuse.org/package/show/openSUSE:Factory/dracut-sshd)
 - [Arch AUR](https://aur.archlinux.org/packages/dracut-sshd-git)
 
-
 [arch]: https://wiki.archlinux.org/index.php/Dm-crypt/Specialties#Remote_unlocking_.28hooks:_netconf.2C_dropbear.2C_tinyssh.2C_ppp.29
 [bls]: https://systemd.io/BOOT_LOADER_SPECIFICATION
 [bug524727]: https://bugzilla.redhat.com/show_bug.cgi?id=524727
@@ -577,3 +576,5 @@ Related Fedora ticket: [Bug 524727 - Dracut + encrypted root + networking (2009)
 [authboot]: https://0pointer.net/blog/authenticated-boot-and-disk-encryption-on-linux.html
 [tang]: https://github.com/latchset/tang
 [mandos]: https://www.recompile.se/mandos
+[debian-package-git]: https://wiki.debian.org/PackagingWithGit
+[git-buildpackage]: https://honk.sigxcpu.org/piki/projects/git-buildpackage/ 
