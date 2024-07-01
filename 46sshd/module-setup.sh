@@ -58,6 +58,9 @@ install() {
     inst_multiple -o /etc/sysconfig/sshd /etc/sysconfig/ssh \
             /etc/sysconfig/dracut-sshd
 
+    # Support OpenSSH 9.8+
+    inst_libdir_file misc/sshd-session
+
     # First entry for Fedora 28, second for Fedora 27
     inst_multiple -o /etc/crypto-policies/back-ends/opensshserver.config \
             /etc/crypto-policies/back-ends/openssh-server.config
