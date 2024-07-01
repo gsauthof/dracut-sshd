@@ -58,6 +58,12 @@ install() {
     inst_multiple -o /etc/sysconfig/sshd /etc/sysconfig/ssh \
             /etc/sysconfig/dracut-sshd
 
+    # Add sshd-session if OpenSSH >= 9.8
+    sshd_version=$(sshd -V |& awk -F'[_.]' '{ print $2$3+0 }')
+    if [ $sshd_version = 98 ] || [ $sshd_version -gt 98 ]; then
+        inst_libdir_file misc/sshd-session
+    fi
+
     # First entry for Fedora 28, second for Fedora 27
     inst_multiple -o /etc/crypto-policies/back-ends/opensshserver.config \
             /etc/crypto-policies/back-ends/openssh-server.config
