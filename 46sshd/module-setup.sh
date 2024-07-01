@@ -58,6 +58,18 @@ install() {
     inst_multiple -o /etc/sysconfig/sshd /etc/sysconfig/ssh \
             /etc/sysconfig/dracut-sshd
 
+    # Copy ssh helper executables for OpenSSH 9.8+
+    # /usr/lib/ssh          -> Arch
+    # /usr/lib(64)/misc     -> Gentoo
+    # /usr/libexec/openssh  -> Fedora (possibly)
+    local d
+    for d in /usr/lib/ssh /usr/lib64/misc /usr/lib/misc /usr/libexec/openssh ; do
+        if [ -f "$d"/sshd-session ]; then
+            inst_multiple "$d"/{sshd-session,sftp-server}
+            break
+        fi
+    done
+
     # First entry for Fedora 28, second for Fedora 27
     inst_multiple -o /etc/crypto-policies/back-ends/opensshserver.config \
             /etc/crypto-policies/back-ends/openssh-server.config
