@@ -61,9 +61,10 @@ install() {
     # Copy ssh helper executables for OpenSSH 9.8+
     # /usr/lib/ssh          -> Arch
     # /usr/lib(64)/misc     -> Gentoo
-    # /usr/libexec/openssh  -> Fedora (possibly)
+    # /usr/libexec/openssh  -> Fedora
+    # /usr/libexec/ssh      -> openSUSE
     local d
-    for d in /usr/lib/ssh /usr/lib64/misc /usr/lib/misc /usr/libexec/openssh ; do
+    for d in /usr/lib/ssh /usr/lib64/misc /usr/lib/misc /usr/libexec/openssh /usr/libexec/ssh ; do
         if [ -f "$d"/sshd-session ]; then
             inst_multiple "$d"/{sshd-session,sftp-server}
             break
