@@ -4,7 +4,7 @@ Name:       {{{ git_dir_name }}}
 # the 'lead' parameter, anyways
 # cf. https://pagure.io/rpkg-util/issue/21#comment-601077
 #Version:    {{{ git_dir_version }}}
-Version:    0.6.6
+Version:    0.6.7
 Release:    1%{?dist}
 Summary:    Provide SSH access to initramfs early user space
 URL:        https://github.com/gsauthof/dracut-sshd
@@ -42,6 +42,10 @@ cp -r 46sshd %{buildroot}/usr/lib/dracut/modules.d/
 %doc example/90-networkd.conf
 
 %changelog
+* Sat Aug 08 2024 Georg Sauthoff <mail@gms.tf> - 0.6.7-1
+- support recent sshd versions
+- enable sftp access
+
 * Sun Jun 18 2023 Georg Sauthoff <mail@gms.tf> - 0.6.6-1
 - update docs and add directory to files list
 
