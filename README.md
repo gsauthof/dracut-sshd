@@ -351,6 +351,16 @@ possible.
 
 ## FAQ
 
+- How to upgrade the dracut-sshd [Copr][copr] repository?
+
+  A: As of 2024, the Copr integration into Fedora doesn't
+  follow key rotations of the Copr platform.
+  Thus, it's necessary to explicitly upgrade to the new Copr key, from time to time,
+  e.g. by simply removing and adding again the dracut-sshd Copr
+  repository.
+  For example, after each Fedora system upgrade.
+  See also the [Copr upstream bug](https://github.com/fedora-copr/copr/issues/2894)
+  and [dracut-sshd issues where this problem and workarounds are discussed](https://github.com/gsauthof/dracut-sshd/issues/82#issuecomment-2272302987).
 - How to make the early boot sshd listen on a non-standard port?
 
   A: If you really [want to do that][port] you can provide a
