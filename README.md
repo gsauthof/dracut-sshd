@@ -521,6 +521,36 @@ promising.
 
 Related Fedora ticket: [Bug 524727 - Dracut + encrypted root + networking (2009)][bug524727]
 
+
+## Testing
+
+The `test` sub-directory contains an end-to-end test suite that
+downloads the latest available Fedora cloud image (from a release
+branch), creates a libvirt VM from it (using
+[virt-install](https://virt-manager.org/) and
+[libvirt](https://libvirt.org/)), encrypts the root filesystem
+(via [guestfish](https://libguestfs.org/)), installs current
+dracut-sshd, including the sample configuration snippets from the
+`example` directory, and verifies that the resulting system can be
+remotely unlocked over ssh and thus fully booted.
+
+Example usage:
+
+```
+cd /temp_directory_with_enough_space
+tdir=/path_to_dracut_sshd_repo/test
+$tdir/get-fedora.sh 41
+ls -l f41-latest.x86_64.qcow2
+$tdir/e2e-fedora.sh 41
+echo $?
+```
+
+Since the test scripts aren't overly long, they can also be used
+as a reference for how to install dracut-sshd, how to use it
+for unlocking, and even how to transform a vanilla Fedora system
+into an encrypted without having to re-install it from scratch.
+
+
 ## Tested Environments
 
 - Fedora Silverblue 33
