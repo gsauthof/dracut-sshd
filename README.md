@@ -24,6 +24,7 @@ dracut-sshd, as long as it's configured with systemd and Dracut.
 - [Hardware Alternatives](#hardware-alternatives)
 - [FAQ](#faq)
 - [Related Work](#related-work)
+- [Testing](#testing)
 - [Tested Environments](#tested-environments)
 - [Packages](#packages)
 
