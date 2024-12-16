@@ -544,7 +544,7 @@ cd /temp_directory_with_enough_space
 tdir=/path_to_dracut_sshd_repo/test
 $tdir/get-fedora.sh 41
 ls -l f41-latest.x86_64.qcow2
-$tdir/e2e-fedora.sh 41
+$tdir/e2e.sh 41
 echo $?
 ```
 

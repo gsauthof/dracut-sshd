@@ -19,7 +19,7 @@ if [ ! -e pw.log ]; then
 fi
 
 
-"$mydir"/create-fedora.sh "$@"
+"$mydir"/create-vm.sh "$@"
 
 wait4sshd "$tag"
 
