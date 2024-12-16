@@ -19,22 +19,26 @@ if [ ! -e pw.log ]; then
 fi
 
 
-"$mydir"/create-fedora.sh "$release"
+"$mydir"/create-fedora.sh "$@"
 
 wait4sshd "$tag"
 
-"$mydir"/install-dracut-sshd.sh "$release"
+"$mydir"/install-dracut-sshd.sh "$@"
 
 sync_shutdown "$tag"
 
-"$mydir"/encrypt-fedora.sh "$release"
-"$mydir"/update-grub.sh "$release"
+if [ "$distri" = f ]; then
+    "$mydir"/encrypt-fedora.sh "$@"
+else
+    "$mydir"/encrypt-rhel.sh "$@"
+fi
+"$mydir"/update-grub.sh "$@"
 
 sync_poweron "$tag"
 wait4sshd "$tag"
 
-"$mydir"/unlock.sh "$release"
+"$mydir"/unlock.sh "$@"
 
 wait4sshd "$tag"
 
-"$mydir"/verify-boot.sh "$release"
+"$mydir"/verify-boot.sh "$@"

@@ -308,9 +308,11 @@ They need to be appended to `GRUB_CMDLINE_LINUX=` in
 `/etc/default/grub` and to be effective the Grub config then
 needs to be regenerated:
 
-    # grub2-editenv - unset kernelopts
+    # grub2-editenv - unset kernelopts      # required on rhel8
     # grub2-mkconfig -o /etc/grub2.cfg
     # grub2-mkconfig -o /etc/grub2-efi.cfg
+    # grub2-mkconfig -o /etc/grub2.cfg     --update-bls-cmdline   # rhel9.5
+    # grub2-mkconfig -o /etc/grub2-efi.cfg --update-bls-cmdline   # rhel9.5
 
 Note that on distributions like CentOS 7/Fedora 27/28 there is
 also the old-school [ifcfg][ifcfg] network scripts system under

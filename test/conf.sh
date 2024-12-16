@@ -2,8 +2,14 @@
 
 release=$1
 
-src=f"$release"-latest.x86_64.qcow2
-tag=f"$release"-dracut-sshd-test
+if [ $# -gt 1 ]; then
+    distri=$2
+else
+    distri=f
+fi
+
+src="$distri$release"-latest.x86_64.qcow2
+tag="$distri$release"-dracut-sshd-test
 dst="$tag".qcow2
 
 key=$PWD/ssh-user

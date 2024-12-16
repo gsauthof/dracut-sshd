@@ -26,6 +26,7 @@ users:
   - name: root
     ssh-authorized-keys:
       - $(cat ssh-user.pub)
+disable_root: false
 ssh_deletekeys: true
 ssh_genkeytypes: ['ed25519']
 ssh_keys:
