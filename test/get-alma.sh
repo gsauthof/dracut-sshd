@@ -34,4 +34,4 @@ mv AlmaLinux-"$release"-GenericCloud-latest.x86_64.qcow2 "$name"
 
 ln -sf "$name" alma"$release"-latest.x86_64.qcow2
 
-
+echo "$release" > alma-release

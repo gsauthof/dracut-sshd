@@ -29,6 +29,9 @@ else
     cid=$(curl -sSf https://kojipkgs.fedoraproject.org/compose/cloud/"$latest"/COMPOSE_ID \
 	  | grep '^Fedora-Cloud[0-9.-]\+$' )
     version=${cid#Fedora-Cloud-}
+    if [ -z "$release" ]; then
+        release=${version%%-*}
+    fi
     img_url=https://kojipkgs.fedoraproject.org/compose/cloud/"$latest"/compose/Cloud/x86_64/images/Fedora-Cloud-Base-Generic-"$version".x86_64.qcow2
     img=Fedora-Cloud-Base-Generic-"$version".x86_64.qcow2
 fi
@@ -44,3 +47,5 @@ else
 fi
 
 ln -sf "$img" f"$release"-latest.x86_64.qcow2
+
+echo "$release" > f-release
