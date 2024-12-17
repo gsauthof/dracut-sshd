@@ -2,25 +2,44 @@ name: e2e-fedora
 run-name: end-to-end test latest Fedora (${{ github.sha }} ${{ github.ref }} ${{ github.actor }})
 on: [push]
 jobs:
-  e2e-est-fedora:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v4
-      - name: show cwd
-        run: |
-          echo "Current working directory: $PWD"
-          echo "Workspace:  ${{ github.workspace }}"
-      - name: install packages
-        run: |
-            sudo apt-get update
-            sudo apt-get -y install socat tmux
-      - name: write config files
-        run: |
-            printf '%s' '${{ secrets.server_crt }}' > server.crt
-            printf '%s' '${{ secrets.client_pem }}' > client.pem
-      - name: inspect
-        run: |
-          # interactively inspecting the environment a bit instead of starting hundreds of exploratory jobs
-          socat exec:'bash -li',pty,stderr,setsid,sigint,sane ssl:${{ secrets.home_host }}:${{ secrets.home_port }},cert=client.pem,cafile=server.crt,commonname=void,openssl-min-proto-version=TLS1.3
+    e2e-est-fedora:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check out repository code
+              uses: actions/checkout@v4
+              # XXX remove when https://github.com/actions/runner-images/issues/10977 is fixed ...
+            - name: disable man-db trigger
+              shell: sudo bash -e {0}
+              run: |
+                  echo 'set man-db/auto-update false' | debconf-communicate
+                  dpkg-reconfigure man-db
+            - name: install packages
+              shell: sudo bash -e {0}
+              run: |
+                  apt update
+                  apt -y install socat xterm libvirt-clients virtinst libvirt-daemon-system qemu-system-x86 goxkcdpwgen guestfish
+            - name: fix libvirt, kvm, guestfish permissions
+              shell: sudo bash -e {0}
+              run: |
+                  echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' > /etc/udev/rules.d/99-kvm4all.rules
+                  udevadm trigger --name-match=kvm
 
+                  setfacl -m user:$SUDO_USER:rw /var/run/libvirt/libvirt-sock
+                  chmod 755 /home/runner
+                  chmod 644 /boot/vmlinuz*
+            - name: verify libvirt, kvm setup
+              run: |
+                  if [ $(virt-host-validate | grep /kvm'.\+PASS$' -c) -ne 2 ]; then
+                      virt-host-validate
+                      echo 'kvm validation failed' >&2
+                      exit 23
+                  fi
+                  virsh --connect qemu:///system list --all
+            - name: run test
+                  cd ..
+                  mkdir -p work
+                  set -x
+                  cd work
+                  ../dracut-sshd/test/get-fedora.sh
+                  ../dracut-sshd/test/e2e.sh $(cat f-release)
+  
