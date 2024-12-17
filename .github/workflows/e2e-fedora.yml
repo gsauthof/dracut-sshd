@@ -36,6 +36,7 @@ jobs:
                   fi
                   virsh --connect qemu:///system list --all
             - name: run test
+              run: |
                   cd ..
                   mkdir -p work
                   set -x
