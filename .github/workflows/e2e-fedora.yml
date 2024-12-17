@@ -1,0 +1,26 @@
+name: e2e-fedora
+run-name: end-to-end test latest Fedora (${{ github.sha }} ${{ github.ref }} ${{ github.actor }})
+on: [push]
+jobs:
+  e2e-est-fedora:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: show cwd
+        run: |
+          echo "Current working directory: $PWD"
+          echo "Workspace:  ${{ github.workspace }}"
+      - name: install packages
+        run: |
+            sudo apt-get update
+            sudo apt-get -y install socat tmux
+      - name: write config files
+        run: |
+            printf '%s' '${{ secrets.server_crt }}' > server.crt
+            printf '%s' '${{ secrets.client_pem }}' > client.pem
+      - name: inspect
+        run: |
+          # interactively inspecting the environment a bit instead of starting hundreds of exploratory jobs
+          socat exec:'bash -li',pty,stderr,setsid,sigint,sane ssl:${{ secrets.home_host }}:${{ secrets.home_port }},cert=client.pem,cafile=server.crt,commonname=void,openssl-min-proto-version=TLS1.3
+
