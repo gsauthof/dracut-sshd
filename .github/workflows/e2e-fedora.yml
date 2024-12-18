@@ -1,6 +1,11 @@
 name: e2e-fedora
 run-name: end-to-end test latest Fedora (${{ github.sha }} ${{ github.ref }} ${{ github.actor }})
-on: [push]
+on:
+    push:
+    pull_request:
+    schedule:
+        # minute hour dom month dow
+        - cron: '29 22 * * 3'
 jobs:
     e2e-est-fedora:
         runs-on: ubuntu-latest
