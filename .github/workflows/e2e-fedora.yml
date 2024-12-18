@@ -3,7 +3,7 @@ run-name: end-to-end test latest Fedora (${{ github.sha }} ${{ github.ref }} ${{
 on:
     push:
     pull_request:
-    schdule:
+    schedule:
         # minute hour dom month dow
         - cron: '29 22 * * 3'
 jobs:
