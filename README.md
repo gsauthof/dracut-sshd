@@ -1,4 +1,5 @@
 [![Copr Build Status](https://copr.fedorainfracloud.org/coprs/gsauthof/dracut-sshd/package/dracut-sshd/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/gsauthof/dracut-sshd/)
+[![CI Build Status](https://github.com/gsauthof/dracut-sshd/actions/workflows/e2e-fedora.yml/badge.svg)](https://github.com/gsauthof/dracut-sshd/actions/workflows/e2e-fedora.yml)
 
 This [Dracut][dracut] module (dracut-sshd) integrates the
 [OpenSSH][ossh] sshd into the [initramfs][iramfs]. It allows for
