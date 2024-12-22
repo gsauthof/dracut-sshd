@@ -10,11 +10,20 @@ fi
 
 
 if [ "$release" = rawhide ]; then
-    cid=$(curl -sSf https://kojipkgs.fedoraproject.org/compose/rawhide/latest-Fedora-Rawhide/COMPOSE_ID \
-        | grep '^Fedora-Rawhide-[0-9a-z.]\+$')
-    version=${cid#Fedora-Rawhide-}
-    img_url=https://kojipkgs.fedoraproject.org/compose/rawhide/latest-Fedora-Rawhide/compose/Cloud/x86_64/images/Fedora-Cloud-Base-Generic-Rawhide-"$version".x86_64.qcow2
-    img=Fedora-Cloud-Base-Generic-Rawhide-"$version".x86_64.qcow2
+    img_url=$(curl -sSf https://openqa.fedoraproject.org/nightlies.html | awk -F '"' ' /^<a class="passedlink" href="https:\/\/kojipkgs\.fedoraproject\.org\/compose\/rawhide\/[^"]+\/Cloud\/x86_64\/images\/Fedora-Cloud-Base-Generic[^"]+"/ {print $4}' | grep '^[A-Za-z0-9.:/_-]\+$')
+
+    if [ "$img_url" ]; then
+        version=${img_url##*-}
+        version=${version%.x86_64.qcow2}
+        img=Fedora-Cloud-Base-Generic-Rawhide-"$version".x86_64.qcow2
+    else
+        # use latest available, in case QA results aren't available
+        cid=$(curl -sSf https://kojipkgs.fedoraproject.org/compose/rawhide/latest-Fedora-Rawhide/COMPOSE_ID \
+            | grep '^Fedora-Rawhide-[0-9a-z.]\+$')
+        version=${cid#Fedora-Rawhide-}
+        img_url=https://kojipkgs.fedoraproject.org/compose/rawhide/latest-Fedora-Rawhide/compose/Cloud/x86_64/images/Fedora-Cloud-Base-Generic-Rawhide-"$version".x86_64.qcow2
+        img=Fedora-Cloud-Base-Generic-Rawhide-"$version".x86_64.qcow2
+    fi
 else
     latest=$(curl -sSf https://kojipkgs.fedoraproject.org/compose/cloud/ \
 	| awk -F'"' ' /latest-Fedora-Cloud-'"$release"'/ {
