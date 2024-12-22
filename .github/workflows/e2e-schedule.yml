@@ -12,6 +12,7 @@ jobs:
                     - fedora
                     - rawhide
                     - alma
+            fail-fast: false
         uses: ./.github/workflows/e2e-base.yml
         with:
             target: ${{ matrix.target }}
