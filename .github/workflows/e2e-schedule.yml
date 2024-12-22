@@ -1,0 +1,18 @@
+name: e2e-schedule
+run-name: end-to-end test latest greatest fedora and alma each weak
+on:
+    schedule:
+        # minute hour dom month dow
+        - cron: '29 22 * * 3'
+jobs:
+    e2e-test-schedule:
+        strategy:
+            matrix:
+                target:
+                    - fedora
+                    - rawhide
+                    - alma
+        uses: ./.github/workflows/e2e-base.yml
+        with:
+            target: ${{ matrix.target }}
+

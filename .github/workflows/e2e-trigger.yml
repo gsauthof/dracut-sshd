@@ -1,0 +1,16 @@
+name: e2e-trigger
+run-name: end-to-end test latest greatest fedora and alma
+on:
+    push:
+    pull_request:
+jobs:
+    e2e-test-schedule:
+        strategy:
+            matrix:
+                target:
+                    - fedora
+                    - rawhide
+                    - alma
+        uses: ./.github/workflows/e2e-base.yml
+        with:
+            target: ${{ matrix.target }}

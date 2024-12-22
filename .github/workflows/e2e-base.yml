@@ -1,13 +1,13 @@
 name: e2e-fedora
 run-name: end-to-end test latest Fedora (${{ github.sha }} ${{ github.ref }} ${{ github.actor }})
 on:
-    push:
-    pull_request:
-    schedule:
-        # minute hour dom month dow
-        - cron: '29 22 * * 3'
+    workflow_call:
+        inputs:
+            target:
+                required: true
+                type: string
 jobs:
-    e2e-est-fedora:
+    e2e-test:
         runs-on: ubuntu-latest
         steps:
             - name: Check out repository code
@@ -41,11 +41,25 @@ jobs:
                   fi
                   virsh --connect qemu:///system list --all
             - name: run test
+              env:
+                  target: ${{ inputs.target }}
               run: |
                   cd ..
                   mkdir -p work
                   set -x
                   cd work
-                  ../dracut-sshd/test/get-fedora.sh
-                  ../dracut-sshd/test/e2e.sh $(cat f-release)
-  
+                  case "$target" in
+                      fedora)
+                          ../dracut-sshd/test/get-fedora.sh
+                          ../dracut-sshd/test/e2e.sh $(cat f-release)
+                          ;;
+                      rawhide)
+                          ../dracut-sshd/test/get-fedora.sh rawhide
+                          ../dracut-sshd/test/e2e.sh $(cat f-release)
+                          ;;
+                      alma)
+                          ../dracut-sshd/test/get-alma.sh
+                          ../dracut-sshd/test/e2e.sh $(cat alma-release) alma
+                          ;;
+                  esac
+
