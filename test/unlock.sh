@@ -15,7 +15,12 @@ if [ "$n" -ne 1 ]; then
     exit 1
 fi
 
-$ssh root@"$guest" systemd-tty-ask-password-agent < pw.log
-
-
-
+set +e
+timeout 30 $ssh root@"$guest" 'systemd-tty-ask-password-agent; sleep 60' < pw.log
+r=$?
+set -e
+if [ $r = 124 ]; then
+    echo 'Unlock timed out' >&2
+    exit 1
+fi
+exit 0
