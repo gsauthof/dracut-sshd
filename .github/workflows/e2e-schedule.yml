@@ -5,7 +5,7 @@ on:
         # minute hour dom month dow
         - cron: '29 22 * * 3'
 jobs:
-    e2e-test-schedule:
+    e2e-schedule:
         strategy:
             matrix:
                 target:
