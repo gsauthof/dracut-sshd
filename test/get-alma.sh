@@ -7,7 +7,7 @@ release=
 if [ $# -gt 0 ]; then
     release=$1
 else
-    release=$(curl -sSf https://repo.almalinux.org/almalinux/ | awk -F'["/]' '/<a href=/ {print $2} ' index | grep '^[0-9]\+$' | sort -n | tail -n -1)
+    release=$(curl -sSf https://repo.almalinux.org/almalinux/ | awk -F'["/]' '/<a href=/ {print $2} ' | grep '^[0-9]\+$' | sort -n | tail -n -1)
 fi
 
 if [[ ! "$release" =~ ^[0-9]+$ ]]; then
