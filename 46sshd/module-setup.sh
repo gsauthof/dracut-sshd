@@ -35,6 +35,7 @@ install() {
     local tpm_tempdir
     if [ -n "$dracut_sshd_tpm_pcrs" ]; then
         tpm_tempdir=$(mktemp -d)
+        chmod 700 "$tpm_tempdir"
         ( set -e
             cd "$tpm_tempdir"
             touch key ; chmod 600 key
@@ -74,6 +75,10 @@ install() {
     if [ "$found_host_key" = no ]; then
         dfatal "Didn't find any SSH host key!"
         return 1
+    fi
+
+    if [ -n "$tpm_tempdir" ]; then
+        rm -rf "$tpm_tempdir"
     fi
 
     if [ -e /root/.ssh/dracut_authorized_keys ]; then
