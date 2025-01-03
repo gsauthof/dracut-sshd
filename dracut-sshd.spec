@@ -12,7 +12,7 @@ License:    GPLv3+
 VCS:        {{{ git_dir_vcs }}}
 Source:     {{{ git_dir_pack }}}
 BuildArch:  noarch
-Requires:   dracut-network
+Requires:   dracut-network tpm2-tools openssl
 
 %description
 This Dracut module integrates the OpenSSH sshd into your
@@ -34,6 +34,9 @@ cp -r 46sshd %{buildroot}/usr/lib/dracut/modules.d/
 %dir /usr/lib/dracut/modules.d/46sshd
 /usr/lib/dracut/modules.d/46sshd/module-setup.sh
 /usr/lib/dracut/modules.d/46sshd/sshd.service
+/usr/lib/dracut/modules.d/46sshd/unseal.service
+/usr/lib/dracut/modules.d/46sshd/50-unseal.conf
+/usr/lib/dracut/modules.d/46sshd/unseal.sh
 /usr/lib/dracut/modules.d/46sshd/motd
 /usr/lib/dracut/modules.d/46sshd/profile
 %config(noreplace) /usr/lib/dracut/modules.d/46sshd/sshd_config
