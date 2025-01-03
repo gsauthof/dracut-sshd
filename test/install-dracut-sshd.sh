@@ -18,6 +18,7 @@ $scp  -r 46sshd                 root@"$guest":/usr/lib/dracut/modules.d/
 if [ "$distri" = f ]; then
     $scp  example/20-wired.network  root@"$guest":/etc/systemd/network/20-wired.network
     $scp  example/90-networkd.conf  root@"$guest":/etc/dracut.conf.d/90-networkd.conf
+    $scp  example/50-tpm.conf  root@"$guest":/etc/dracut.conf.d/50-tpm.conf
 
     $ssh root@"$guest" <<EOF
 set -eux
