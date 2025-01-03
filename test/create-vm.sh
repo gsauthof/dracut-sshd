@@ -41,9 +41,10 @@ virt-install --connect qemu:///system \
     --name "$tag" \
     --memory 2048 \
     --network default \
-    --cpu host --vcpus 2 \
+    --cpu host-model --vcpus 2 \
     --graphics none \
     --autoconsole none \
+    --tpm default \
     --import \
     --disk "$dst",format=qco2,bus=virtio \
     --osinfo fedora-unknown \
