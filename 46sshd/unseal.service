@@ -1,0 +1,13 @@
+[Unit]
+Description=Unseal OpenSSH host keys
+DefaultDependencies=no
+#Before=sshd.service
+After=tpm2.target
+Requires=tpm2.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/unseal.sh
+
+#[Install]
+#RequiredBy=sshd.service

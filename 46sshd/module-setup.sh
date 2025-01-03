@@ -6,6 +6,15 @@
 # called by dracut
 check() {
     require_binaries sshd || return 1
+    if [ -n "$dracut_sshd_tpm_pcrs" ]; then
+        require_binaries openssl &&
+        require_binaries tpm2_createprimary &&
+        require_binaries tpm2_pcrread &&
+        require_binaries tpm2_createpolicy &&
+        require_binaries tpm2_create &&
+        require_binaries tpm2_unseal ||
+        return 1
+    fi
     # 0 enables by default, 255 only on request
     return 0
 }
@@ -22,13 +31,43 @@ install() {
     if [ "$(find /etc/ssh -maxdepth 1 -name 'dracut_ssh_host_*_key')" ]; then
         key_prefix=dracut_
     fi
+    
+    local tpm_tempdir
+    if [ -n "$dracut_sshd_tpm_pcrs" ]; then
+        tpm_tempdir=$(mktemp -d)
+        ( set -e
+            cd "$tpm_tempdir"
+            touch key ; chmod 600 key
+            openssl rand 32 > key
+            tpm2_createprimary -Q -c primary.ctx
+            if [ -n "$dracut_sshd_pcr_bin" ]; then
+                echo "copying ${dracut_sshd_pcr_bin@Q}"
+                cp "$dracut_sshd_pcr_bin" pcr.bin
+            else
+                echo "reading current pcrs" >&2
+                tpm2_pcrread -o pcr.bin "$dracut_sshd_tpm_pcrs"
+            fi
+            tpm2_createpolicy -Q --policy-pcr -l "$dracut_sshd_tpm_pcrs" -f pcr.bin -L pcr.policy
+            tpm2_create -Q -C primary.ctx -L pcr.policy -i key -c key.ctx
+            /usr/bin/install -Dm 644 key.ctx "$initdir/etc/ssh/key.ctx"
+            echo "$dracut_sshd_tpm_pcrs" > "$initdir/etc/ssh/pcrs"
+        ) || {
+            dfatal "Couldn't include sealed key!"
+            return 1
+        }
+    fi 
+
     local found_host_key=no
     for key_type in dsa ecdsa ed25519 rsa; do
         ssh_host_key=/etc/ssh/"$key_prefix"ssh_host_"$key_type"_key
         if [ -f "$ssh_host_key" ]; then
             inst_simple "$ssh_host_key".pub /etc/ssh/ssh_host_"$key_type"_key.pub
-            /usr/bin/install -m 600 "$ssh_host_key" \
+            if [ -n "$dracut_sshd_tpm_pcrs" ]; then
+                openssl aes-256-cbc -e -in "$ssh_host_key" -out "$initdir/etc/ssh/ssh_host_${key_type}_key.enc" -kfile "$tpm_tempdir/key" -iter 1
+            else
+                /usr/bin/install -m 600 "$ssh_host_key" \
                     "$initdir/etc/ssh/ssh_host_${key_type}_key"
+            fi
             found_host_key=yes
         fi
     done
@@ -75,6 +114,15 @@ install() {
     inst_multiple -o /etc/crypto-policies/back-ends/opensshserver.config \
             /etc/crypto-policies/back-ends/openssh-server.config
     inst_simple "${moddir}/sshd.service" "$systemdsystemunitdir/sshd.service"
+    if [ -n "$dracut_sshd_tpm_pcrs" ]; then
+        inst_binary /usr/bin/touch
+        inst_binary /usr/bin/openssl
+        inst_binary /usr/bin/basename
+        inst_binary /usr/bin/tpm2_unseal
+        inst_simple "${moddir}/unseal.sh" /usr/sbin/unseal.sh
+        inst_simple "${moddir}/unseal.service" "$systemdsystemunitdir/unseal.service"
+        inst_simple "${moddir}/50-unseal.conf" "$systemdsystemunitdir/sshd.service.d/50-unseal.conf"
+    fi
     inst_simple "${moddir}/sshd_config" /etc/ssh/sshd_config
 
     { grep '^sshd:' $dracutsysrootdir/etc/passwd || echo 'sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin'; } >> "$initdir/etc/passwd"
