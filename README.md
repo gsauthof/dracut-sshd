@@ -114,9 +114,9 @@ under `/etc/dracut-sshd` as `/root` isn't accessible during
 
 Of course, our initramfs image needs network support. The simplest
 way to achieve this is to include [networkd][networkd]. To install
-the networkd dracut module:
+the networkd dracut module and networkd itself:
 
-    # dnf install -y dracut-network
+    # dnf install -y dracut-network systemd-networkd
 
 When installing from copr, `dracut-network` is automatically
 installed as dependency.
