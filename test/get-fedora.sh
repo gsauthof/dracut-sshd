@@ -10,7 +10,7 @@ fi
 
 
 if [ "$release" = rawhide ]; then
-    img_url=$(curl -sSf https://openqa.fedoraproject.org/nightlies.html | awk -F '"' ' /^<a class="passedlink" href="https:\/\/kojipkgs\.fedoraproject\.org\/compose\/rawhide\/[^"]+\/Cloud\/x86_64\/images\/Fedora-Cloud-Base-Generic[^"]+"/ {print $4}' | grep '^[A-Za-z0-9.:/_-]\+$')
+    img_url=$(curl -sSf https://openqa.fedoraproject.org/nightlies.html | awk -F '"' ' /^<a class="passedlink" href="https:\/\/kojipkgs\.fedoraproject\.org\/compose\/rawhide\/[^"]+\/Cloud\/x86_64\/images\/Fedora-Cloud-Base-Generic[^"]+"/ {print $4}' | grep '^[A-Za-z0-9.:/_-]\+$' | tail -n 1)
 
     if [ "$img_url" ]; then
         version=${img_url##*-}
