@@ -491,6 +491,12 @@ The [ArchWiki dm-crypt page][arch] lists two initramfs hooks for
 remote access.  Both don't use [Dracut][dracut] nor systemd,
 though. Also, they use Dropbear and Tinyssh as ssh daemon.
 
+Another initramfs (non-dracut) hook script, but targeting Debian
+systems, is [UnLUKS][unluks]. Similar to the Arch scripts it
+starts the SSH daemon directly from the hook script into the
+background, i.e. without any systemd integration. However, in
+contrast to the Arch scripts it uses stock OpenSSH sshd.
+
 [Clevis][clevis], an automatic decryption framework, has some
 [LUKS][luks] unlocking and Dracut support. Looking at its documentation,
 when it comes to automatic LUKS unlocking, the LUKS passphrase is
@@ -621,3 +627,4 @@ into an encrypted without having to re-install it from scratch.
 [authboot]: https://0pointer.net/blog/authenticated-boot-and-disk-encryption-on-linux.html
 [tang]: https://github.com/latchset/tang
 [mandos]: https://www.recompile.se/mandos
+[unluks]: https://github.com/BarbarossaTM/fluffy-unluks
