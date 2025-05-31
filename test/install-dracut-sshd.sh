@@ -38,6 +38,9 @@ else # RHEL, Alma, ... Linux distributions that lack networkd
 
     $ssh root@"$guest" <<EOF
 set -eux
+
+dnf -y install dracut-network
+
 function f {
     sed '/^GRUB_CMDLINE_LINUX\(_DEFAULT\|\)="[^"]*'"\$1"'[^"]*"/!s/^GRUB_CMDLINE_LINUX\(_DEFAULT\|\)="[^"]*/& '"\$1"'/' \
         /etc/default/grub -i
