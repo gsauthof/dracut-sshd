@@ -63,8 +63,9 @@ install() {
     # /usr/lib(64)/misc     -> Gentoo
     # /usr/libexec/openssh  -> Fedora
     # /usr/libexec/ssh      -> openSUSE
+    # /usr/lib/openssh      -> Debian
     local d
-    for d in /usr/lib/ssh /usr/lib64/misc /usr/lib/misc /usr/libexec/openssh /usr/libexec/ssh ; do
+    for d in /usr/lib/ssh /usr/lib64/misc /usr/lib/misc /usr/libexec/openssh /usr/libexec/ssh /usr/lib/openssh ; do
         if [ -f "$d"/sshd-session ]; then
             inst_multiple -o "$d"/{sshd-session,sftp-server,sshd-auth}
             break
