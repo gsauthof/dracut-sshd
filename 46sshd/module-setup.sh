@@ -17,7 +17,7 @@ depends() {
 
 # called by dracut
 install() {
-    local key_prefix key_type ssh_host_key authorized_keys
+    local key_prefix key_type ssh_host_key authorized_keys sshd_config
     key_prefix=
     if [ "$(find /etc/ssh -maxdepth 1 -name 'dracut_ssh_host_*_key')" ]; then
         key_prefix=dracut_
@@ -76,7 +76,12 @@ install() {
     inst_multiple -o /etc/crypto-policies/back-ends/opensshserver.config \
             /etc/crypto-policies/back-ends/openssh-server.config
     inst_simple "${moddir}/sshd.service" "$systemdsystemunitdir/sshd.service"
-    inst_simple "${moddir}/sshd_config" /etc/ssh/sshd_config
+    if [ -e /etc/dracut-sshd/sshd_config ]; then
+        sshd_config=/etc/dracut-sshd/sshd_config
+    else
+        sshd_config="${moddir}/sshd_config"
+    fi
+    inst_simple "$sshd_config" /etc/ssh/sshd_config
 
     { grep '^sshd:' $dracutsysrootdir/etc/passwd || echo 'sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin'; } >> "$initdir/etc/passwd"
     { grep '^sshd:' $dracutsysrootdir/etc/group  || echo 'sshd:x:74:'; } >> "$initdir/etc/group"
