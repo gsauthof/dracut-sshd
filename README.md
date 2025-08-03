@@ -1,4 +1,3 @@
-[![Copr Build Status](https://copr.fedorainfracloud.org/coprs/gsauthof/dracut-sshd/package/dracut-sshd/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/gsauthof/dracut-sshd/)
 [![CI Build Status](https://github.com/gsauthof/dracut-sshd/actions/workflows/e2e-trigger.yml/badge.svg)](https://github.com/gsauthof/dracut-sshd/actions/workflows/e2e-trigger.yml)
 
 This [Dracut][dracut] module (dracut-sshd) integrates the
@@ -85,14 +84,15 @@ Copy the `46sshd` subdirectory to the [Dracut][dracut] module directory:
 
     # cp -ri 46sshd /usr/lib/dracut/modules.d
 
-Alternatively, you can install the latest stable version from the
-[dracut-sshd copr repository][copr].
+Alternatively, you can install the latest stable version from
+your distribution's package repository, where available (e.g. the
+[dracut-sshd package on Fedora or EPEL][fedora]).
 
 Either way, once present under `/usr/lib/dracut/modules.d` it's
 enabled, by default.
 
-With an sshd that lacks systemd support (e.g. under Gentoo), one
-has to adjust the systemd service file:
+With an older sshd (i.e. older that 9.8 _and_ lacking patched-in
+systemd support), one has to adjust the systemd service file:
 
     # echo 'Skip this sed on Fedora/RHEL/CentOS/Debian/Ubuntu/...!'
     # sed -e 's/^Type=notify/Type=simple/' \
@@ -118,7 +118,7 @@ the networkd dracut module and networkd itself:
 
     # dnf install -y dracut-network systemd-networkd
 
-When installing from copr, `dracut-network` is automatically
+When installing from an rpm package, `dracut-network` is automatically
 installed as dependency.
 
 Create a non-[NetworkManager][nm] network config, e.g. via
@@ -355,16 +355,6 @@ possible.
 
 ## FAQ
 
-- How to upgrade the dracut-sshd [Copr][copr] repository?
-
-  A: As of 2024, the Copr integration into Fedora doesn't
-  follow key rotations of the Copr platform.
-  Thus, it's necessary to explicitly upgrade to the new Copr key, from time to time,
-  e.g. by simply removing and adding again the dracut-sshd Copr
-  repository.
-  For example, after each Fedora system upgrade.
-  See also the [Copr upstream bug](https://github.com/fedora-copr/copr/issues/2894)
-  and [dracut-sshd issues where this problem and workarounds are discussed](https://github.com/gsauthof/dracut-sshd/issues/82#issuecomment-2272302987).
 - How to make the early boot sshd listen on a non-standard port?
 
   A: If you really [want to do that][port] you can provide a
@@ -564,7 +554,7 @@ into an encrypted without having to re-install it from scratch.
 ## Tested Environments
 
 - Fedora Silverblue 33
-- Fedora 27 to 41
+- Fedora 27 to 42
 - CentOS 7, 8
 - CentOS Stream 9 (by a contributor)
 - RHEL 8 beta 1
@@ -579,18 +569,18 @@ into an encrypted without having to re-install it from scratch.
 
 ## Packages
 
-- [Copr][copr] - for Fedora, EPEL (i.e. RHEL or RHEL clones such
-  as AlmaLinux or Rocky)
+- [Fedora][fedora]
+- Alma, RHEL, CentOS etc. via [Fedora EPEL][fedora] repository
 - [openSUSE](https://build.opensuse.org/package/show/openSUSE:Factory/dracut-sshd)
 - [Arch AUR](https://aur.archlinux.org/packages/dracut-sshd-git)
 
 
+[fedora]: https://src.fedoraproject.org/rpms/dracut-sshd
 [arch]: https://wiki.archlinux.org/index.php/Dm-crypt/Specialties#Remote_unlocking_.28hooks:_netconf.2C_dropbear.2C_tinyssh.2C_ppp.29
 [bls]: https://systemd.io/BOOT_LOADER_SPECIFICATION
 [bug524727]: https://bugzilla.redhat.com/show_bug.cgi?id=524727
 [bug868421]: https://bugzilla.redhat.com/show_bug.cgi?id=868421
 [clevis]: https://github.com/latchset/clevis
-[copr]: https://copr.fedorainfracloud.org/coprs/gsauthof/dracut-sshd/
 [cryptssh]: https://github.com/dracut-crypt-ssh/dracut-crypt-ssh
 [cryptssh-uwe]: https://github.com/dracut-crypt-ssh/dracut-crypt-ssh/pull/17
 [cryptssh-unm]: https://github.com/dracut-crypt-ssh/dracut-crypt-ssh/issues/43
