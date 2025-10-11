@@ -519,6 +519,11 @@ access to early boot doesn't have to be awful. For example, there is
 the open and DIY [Pi-KVM][pikvm] project which looks quite
 promising.
 
+In 2025, with OSX Tahö (a.k.a. Tahoe) Apple [finally added SSH
+access](https://www.jeffgeerling.com/blog/2025/you-can-finally-manage-macs-filevault-remotely-tahoe)
+to its OSX early boot environment for remote unlocking encrypted
+volumes.
+
 Related Fedora ticket: [Bug 524727 - Dracut + encrypted root + networking (2009)][bug524727]
 
 
