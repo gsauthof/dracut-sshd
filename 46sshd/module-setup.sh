@@ -54,6 +54,11 @@ install() {
     /usr/bin/install -m 600 "$authorized_keys" \
             "$initdir/root/.ssh/authorized_keys"
 
+    if [ -e /etc/dracut-sshd/wired.network ]; then
+        /usr/bin/install -m 600 "/etc/dracut-sshd/wired.network" \
+            "$initdir/etc/systemd/network/wired.network"
+    fi
+
     inst_binary /usr/sbin/sshd
     inst_multiple -o /etc/sysconfig/sshd /etc/sysconfig/ssh \
             /etc/sysconfig/dracut-sshd
