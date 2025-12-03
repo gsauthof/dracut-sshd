@@ -94,7 +94,7 @@ install() {
     # Create privilege separation directory
     # /var/empty/sshd       -> Fedora, CentOS, RHEL
     # /usr/share/empty.sshd -> Fedora >= 34
-    # /var/emtpy            -> Arch, OpenSSH upstream
+    # /var/empty            -> Arch, OpenSSH upstream
     # /var/lib/empty        -> Suse
     # /var/chroot/ssh       -> Void Linux
     local d
