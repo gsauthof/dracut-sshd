@@ -21,8 +21,6 @@ fi
 
 "$mydir"/create-vm.sh "$@"
 
-wait4sshd "$tag"
-
 "$mydir"/install-dracut-sshd.sh "$@"
 
 sync_shutdown "$tag"

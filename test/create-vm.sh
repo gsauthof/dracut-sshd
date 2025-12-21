@@ -51,3 +51,4 @@ virt-install --connect qemu:///system \
     --osinfo fedora-unknown \
     --cloud-init user-data=cloud-init.yml,meta-data=meta-data.yml
 
+wait4sshd "$tag"
