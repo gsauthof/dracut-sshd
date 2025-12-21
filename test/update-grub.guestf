@@ -3,9 +3,9 @@
  
 run
 mount /dev/sda3 /
-ls /loader/entries | grep -v rescue | tee entry-name
-<! echo download /loader/entries/$(cat entry-name) entry
+find / | grep loader/entries/ | grep -v rescue | tee entry-name
+<! echo download /$(cat entry-name) entry
 !sed -i 's/^\(options .\+$\)/\1 rd.luks.uuid='$(cat luks-uuid)'/' entry
-<! echo upload entry /loader/entries/$(cat entry-name)
+<! echo upload entry /$(cat entry-name)
 umount /
 
