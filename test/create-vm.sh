@@ -24,7 +24,7 @@ cat <<EOF > cloud-init.yml
 #cloud-config
 users:
   - name: root
-    ssh-authorized-keys:
+    ssh_authorized_keys:
       - $(cat ssh-user.pub)
 disable_root: false
 ssh_deletekeys: true
@@ -41,7 +41,7 @@ virt-install --connect qemu:///system \
     --name "$tag" \
     --memory 2048 \
     --network default \
-    --cpu host --vcpus 2 \
+    --cpu host-model --vcpus 2 \
     --graphics none \
     --autoconsole none \
     --import \
