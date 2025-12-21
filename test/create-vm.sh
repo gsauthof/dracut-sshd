@@ -30,8 +30,6 @@ disable_root: false
 ssh_deletekeys: true
 ssh_genkeytypes: ['ed25519']
 ssh_keys:
-    ssh_deletekeys: true
-    ssh_genkeytypes: ['ed25519']
     ed25519_private: |
 $(sed 's/^/        /' host-key-ed25519)
     ed25519_public: $(cat host-key-ed25519.pub)
