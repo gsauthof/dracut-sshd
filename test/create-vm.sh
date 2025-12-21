@@ -35,6 +35,10 @@ $(sed 's/^/        /' host-key-ed25519)
     ed25519_public: $(cat host-key-ed25519.pub)
 EOF
 
+cat <<EOF > meta-data.yml
+instance-id: fubar
+EOF
+
 virt-install --connect qemu:///system \
     --name "$tag" \
     --memory 2048 \
@@ -45,6 +49,5 @@ virt-install --connect qemu:///system \
     --import \
     --disk "$dst",format=qco2,bus=virtio \
     --osinfo fedora-unknown \
-    --cloud-init user-data=cloud-init.yml
-
+    --cloud-init user-data=cloud-init.yml,meta-data=meta-data.yml
 
