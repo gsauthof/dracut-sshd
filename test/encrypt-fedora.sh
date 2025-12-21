@@ -11,7 +11,7 @@ qemu-img create -f qcow2 tmp.img 10g
 
 
 part_count=$(echo -e 'run\nlist-partitions' | guestfish -a "$dst" | wc -l)
-rm -f sector-size part-list root-uuid boot-uuid luks-uuid fstab grub.cfg g2.cfg grub
+rm -f sector-size part-list root-uuid boot-uuid luks-uuid fstab grub.cfg g2.cfg grub boot.tar.gz
 
 
 if [ "$part_count" -eq 3 ]; then
