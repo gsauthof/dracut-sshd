@@ -10,7 +10,7 @@ and systemd as init system, such as Fedora, CentOS/RHEL (version
 7 or greater) and SUSE. Gentoo is also to known to work with
 dracut-sshd, as long as it's configured with systemd and Dracut.
 
-2018, Georg Sauthoff <mail@gms.tf>, GPLv3+
+2018-2025, Georg Sauthoff <mail@gms.tf>, GPLv3+
 
 ## TOC
 
@@ -312,7 +312,7 @@ real kernel parameters) or added to the dracut configuration (cf.
 
 ## Hardware Alternatives
 
-A Baseboard Management Controller (BMC) or some kind of [remote KVM][kvm]
+A [Baseboard Management Controller (BMC)][bmc] or some kind of [remote KVM][kvm]
 device can help with early boot issues, however:
 
 - not all remote machines even have a BMC
@@ -487,11 +487,29 @@ Keys](#host-keys) Section, you have to look into [authenticated
 boot and disk encryption][authboot].
 
 Although enterprise motherboard and server vendors often
-integrate unpleasant BMCs (cf. the [Hardware Alternatives
-Section](#hardware-alternatives)), a hardware solution for remote
+integrate low-key unpleasant [BMCs][bmc] (a.k.a. [iLO][ilo] on HP
+servers, cf. the [Hardware Alternatives Section](#hardware-alternatives)),
+a hardware solution for remote
 access to early boot doesn't have to be awful. For example, there is
 the open and DIY [Pi-KVM][pikvm] project which looks quite
 promising.
+
+Even without a dedicated BMC chip present on the motherboard,
+your CPU might directly integrate very similar features.
+For example, Intel calls this [Active Management Technology
+(AMT)][amt] and puts it into its vPro marketed CPUs.
+To actually use it, the motherboard vendor/system integrator need
+to do their homework, such as integrating a compatible onboard
+ethernet interface in the right way and exposing the right
+firmware knobs.
+Ideally, the end-user is able to enable and configure AMT via the BIOS.
+However, Intel doesn't really provide much technical
+documentation for end-users and developers regarding AMT.
+See also
+[amtterm(1)](http://www.kraxel.org/blog/linux/amtterm/),
+[amt-howto(7)](https://manpath.be/f39/7/amt-howto),
+a [serverfault question](https://serverfault.com/questions/299194/intel-amt-enable-vnc-via-linux)
+and a [blog post](https://senseless.info/amt.html) on AMT usage.
 
 In 2025, with OSX Tahö (a.k.a. Tahoe) Apple [finally added SSH
 access](https://www.jeffgeerling.com/blog/2025/you-can-finally-manage-macs-filevault-remotely-tahoe)
@@ -533,11 +551,12 @@ into an encrypted without having to re-install it from scratch.
 ## Tested Environments
 
 - Fedora Silverblue 33
-- Fedora 27 to 42
+- Fedora 27 to 43
+- Alma 10.1
 - CentOS 7, 8
 - CentOS Stream 9 (by a contributor)
 - RHEL 8 beta 1
-- Rocky Linux 8.8, 9 (by a contributor)
+- Rocky Linux 8.8, 9, 10.1 (last two by contributors)
 - Gentoo (by a contributor)
 - SUSE (by a contributor)
 - openSUSE Leap 15.5
@@ -552,10 +571,14 @@ into an encrypted without having to re-install it from scratch.
 - Alma, RHEL, CentOS etc. via [Fedora EPEL][fedora] repository
 - [openSUSE](https://build.opensuse.org/package/show/openSUSE:Factory/dracut-sshd)
 - [Arch AUR](https://aur.archlinux.org/packages/dracut-sshd-git)
+- [Repology.org Overview](https://repology.org/project/dracut-sshd/versions)
+
 
 
 [fedora]: https://src.fedoraproject.org/rpms/dracut-sshd
+[amt]: https://en.wikipedia.org/wiki/Intel_Active_Management_Technology
 [arch]: https://wiki.archlinux.org/index.php/Dm-crypt/Specialties#Remote_unlocking_.28hooks:_netconf.2C_dropbear.2C_tinyssh.2C_ppp.29
+[bmc]: https://en.wikipedia.org/wiki/Intelligent_Platform_Management_Interface#Baseboard_management_controller
 [bug524727]: https://bugzilla.redhat.com/show_bug.cgi?id=524727
 [bug868421]: https://bugzilla.redhat.com/show_bug.cgi?id=868421
 [clevis]: https://github.com/latchset/clevis
@@ -568,6 +591,7 @@ into an encrypted without having to re-install it from scratch.
 [drop25519]: https://github.com/mkj/dropbear/pull/91
 [drop25519b]: https://github.com/mkj/dropbear/issues/136#issuecomment-913134728
 [dropsk]: https://github.com/mkj/dropbear/issues/135
+[ilo]: https://en.wikipedia.org/wiki/HPE_Integrated_Lights-Out
 [ifcfg]: https://www.centos.org/docs/5/html/Deployment_Guide-en-US/s1-networkscripts-interfaces.html
 [iramfs]: https://en.wikipedia.org/wiki/Initial_ramdisk
 [kvm]: https://en.wikipedia.org/wiki/KVM_switch#Remote_KVM_devices
