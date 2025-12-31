@@ -305,35 +305,9 @@ early userspace:
 
     rd.neednet=1 ip=dhcp
 
-They need to be appended to `GRUB_CMDLINE_LINUX=` in
-`/etc/default/grub` and to be effective the Grub config then
-needs to be regenerated:
-
-    # grub2-editenv - unset kernelopts      # required on rhel8
-    # grub2-mkconfig -o /etc/grub2.cfg
-    # grub2-mkconfig -o /etc/grub2-efi.cfg
-    # grub2-mkconfig -o /etc/grub2.cfg     --update-bls-cmdline   # rhel9.5
-    # grub2-mkconfig -o /etc/grub2-efi.cfg --update-bls-cmdline   # rhel9.5
-
-Note that on distributions like CentOS 7/Fedora 27/28 there is
-also the old-school [ifcfg][ifcfg] network scripts system under
-`/etc/sysconfig/network-scripts` that can be used instead of
-[NetworkManager][nm]. It can be launched via the auto-generated
-`network` service that calls the old sysv init.d script. However,
-the network Dracut module doesn't include neither this service
-nor the network-scripts configuration (it includes some of the
-scripts but the Dracut modules auto-generate the configuration
-during early userspace boot based on the kernel
-command line/detected hardware). With CentOS 7/Fedora 27/28 the
-default network configuration (in late userspace) uses
-NetworkManager which only uses the `ifcfg-*` files under
-`/etc/sysconfig/network-scripts`.
-
-The `grub2-editenv` call is only necessary on systems (such as
-RHEL 8) where the kernel parameters are stored in `/etc/grubenv`
-instead of in each menu entry (either in the main `grub2.cfg` or
-under `/boot/loader/entries` if the system follows the [boot
-loader specification (bls)][bls]).
+They need to be appended either to the kernel command line (like
+real kernel parameters) or added to the dracut configuration (cf.
+`example/90-networkmanager.conf`).
 
 
 ## Hardware Alternatives
@@ -582,7 +556,6 @@ into an encrypted without having to re-install it from scratch.
 
 [fedora]: https://src.fedoraproject.org/rpms/dracut-sshd
 [arch]: https://wiki.archlinux.org/index.php/Dm-crypt/Specialties#Remote_unlocking_.28hooks:_netconf.2C_dropbear.2C_tinyssh.2C_ppp.29
-[bls]: https://systemd.io/BOOT_LOADER_SPECIFICATION
 [bug524727]: https://bugzilla.redhat.com/show_bug.cgi?id=524727
 [bug868421]: https://bugzilla.redhat.com/show_bug.cgi?id=868421
 [clevis]: https://github.com/latchset/clevis

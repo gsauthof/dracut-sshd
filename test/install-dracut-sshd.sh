@@ -36,27 +36,12 @@ else # RHEL, Alma, ... Linux distributions that lack networkd
 
     # NB: RHEL/Alma images already have dracut-network pre-installed
 
+    $scp  example/90-networkmanager.conf  root@"$guest":/etc/dracut.conf.d/90-networkmanager.conf
+
     $ssh root@"$guest" <<EOF
 set -eux
 
 dnf -y install dracut-network
-
-function f {
-    sed '/^GRUB_CMDLINE_LINUX\(_DEFAULT\|\)="[^"]*'"\$1"'[^"]*"/!s/^GRUB_CMDLINE_LINUX\(_DEFAULT\|\)="[^"]*/& '"\$1"'/' \
-        /etc/default/grub -i
-}
-f 'rd.neednet=1 ip=dhcp'
-
-# kernelopts are used on RHEL8, nullop on RHEL9
-grub2-editenv - unset kernelopts
-
-if grub2-mkconfig --help  | grep -- --update-bls-cmdline >/dev/null ; then
-    # new scheme since RHEL 9.5 ...
-    grub2-mkconfig -o /etc/grub2.cfg --update-bls-cmdline
-else
-    grub2-mkconfig -o /etc/grub2.cfg
-fi
-
 dracut -f -v
 EOF
 fi
