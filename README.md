@@ -147,6 +147,11 @@ install_items+=" /etc/systemd/network/20-wired.network "
 add_dracutmodules+=" systemd-networkd "
 ```
 
+Alternatively, if you want the network file to come from outside of:
+`/etc/systemd/network/` then you can put it at `/etc/dracut-sshd/wired.network`
+and it will get included at `/etc/systemd/network/wired.network` automatically.
+In this case, don't add the `install_items` line above.
+
 Alternatively, early boot network connectivity can be configured
 by other means (i.e.  kernel parameters, see below).  However,
 the author of this README strongly recommends to use Networkd

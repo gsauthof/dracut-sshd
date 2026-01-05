@@ -54,6 +54,11 @@ install() {
     /usr/bin/install -m 600 "$authorized_keys" \
             "$initdir/root/.ssh/authorized_keys"
 
+    if [ -e /etc/dracut-sshd/wired.network ]; then
+        /usr/bin/install -m 600 "/etc/dracut-sshd/wired.network" \
+            "$initdir/etc/systemd/network/wired.network"
+    fi
+
     inst_binary /usr/sbin/sshd
     inst_multiple -o /etc/sysconfig/sshd /etc/sysconfig/ssh \
             /etc/sysconfig/dracut-sshd
@@ -89,7 +94,7 @@ install() {
     # Create privilege separation directory
     # /var/empty/sshd       -> Fedora, CentOS, RHEL
     # /usr/share/empty.sshd -> Fedora >= 34
-    # /var/emtpy            -> Arch, OpenSSH upstream
+    # /var/empty            -> Arch, OpenSSH upstream
     # /var/lib/empty        -> Suse
     # /var/chroot/ssh       -> Void Linux
     local d
