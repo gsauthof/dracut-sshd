@@ -1,5 +1,5 @@
 name: e2e-schedule
-run-name: end-to-end test latest greatest fedora and alma each weak
+run-name: end-to-end test latest greatest fedora and alma each week
 on:
     schedule:
         # minute hour dom month dow
