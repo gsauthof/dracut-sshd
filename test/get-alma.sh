@@ -7,7 +7,7 @@ release=
 if [ $# -gt 0 ]; then
     release=$1
 else
-    release=$(curl -sSf https://repo.almalinux.org/almalinux/ | grep '<a href="\.[^"]\+"' -o | cut -d/ -f2 | grep '^[0-9]\+$' | sort -n | tail -n -1)
+    release=$(curl -sSf https://repo.almalinux.org/almalinux/ | grep -o '<a href="[0-9][0-9.]\+/"' | grep -o '[0-9.]\+' | grep '^[0-9]\+$' | sort -n | tail -n -1)
 fi
 
 if [[ ! "$release" =~ ^[0-9]+$ ]]; then
