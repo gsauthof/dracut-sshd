@@ -559,7 +559,7 @@ into an encrypted without having to re-install it from scratch.
 - Rocky Linux 8.8, 9, 10.1 (last two by contributors)
 - Gentoo (by a contributor)
 - SUSE (by a contributor)
-- openSUSE Leap 15.5
+- openSUSE Leap 15.5, 16.0
 - Arch (by a contributor)
 - Ubuntu 20.04 LTS
 - Debian 12 (by a contributor)
