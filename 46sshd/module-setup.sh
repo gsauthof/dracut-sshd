@@ -17,7 +17,7 @@ depends() {
 
 # called by dracut
 install() {
-    local key_prefix key_type ssh_host_key authorized_keys sshd_config
+    local key_prefix key_type ssh_host_key authorized_keys sshd_config root_shell
     key_prefix=
     if [ "$(find /etc/ssh -maxdepth 1 -name 'dracut_ssh_host_*_key')" ]; then
         key_prefix=dracut_
@@ -85,6 +85,11 @@ install() {
 
     { grep '^sshd:' $dracutsysrootdir/etc/passwd || echo 'sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin'; } >> "$initdir/etc/passwd"
     { grep '^sshd:' $dracutsysrootdir/etc/group  || echo 'sshd:x:74:'; } >> "$initdir/etc/group"
+
+    root_shell="$(sed -n 's#^root:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:\([^:]*\)$#\1#p' "$dracutsysrootdir/etc/passwd")"
+    if [ -e "$root_shell" ]; then
+        inst_binary "$root_shell"
+    fi
 
     # Create privilege separation directory
     # /var/empty/sshd       -> Fedora, CentOS, RHEL
