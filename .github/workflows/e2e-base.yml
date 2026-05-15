@@ -11,7 +11,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Check out repository code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               # XXX remove when https://github.com/actions/runner-images/issues/10977 is fixed ...
             - name: disable man-db trigger
               shell: sudo bash -e {0}
