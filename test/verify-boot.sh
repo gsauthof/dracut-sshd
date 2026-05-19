@@ -8,7 +8,7 @@ mydir=$(dirname -- "${BASH_SOURCE[0]}")
 
 guest=$(get_addr "$tag")
 
-$ssh root@"$guest" which top
+$ssh root@"$guest" command -v top
 $ssh root@"$guest" hostnamectl
 
 
