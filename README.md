@@ -346,8 +346,11 @@ possible.
 - Why do I get `Permission denied (publickey)` although the same
   authorized key works after the system is booted?
 
-  A: This can be caused by a root account that is locked with `!`
-  instead of `*`. In that case it's enough to change the lock
+  A: This can be caused by several account configuration issues that
+  lead to sshd rejecting root logins.
+
+  1) Incompatible lock method. That means when the root account that is locked with `!`
+  instead of `*`. In that case it's sufficient to change the lock
   method (or set a password) and regenerate the initramfs.
   Background: On some systems Dracut also includes `/etc/shadow`
   which is then used by sshd. In early userspace, there is no
@@ -357,6 +360,24 @@ possible.
   between `*` and `!` as invalid password field tokens. Meaning
   that only `*` allows public key authentication while `!` blocks
   any login ([see also][i30]).
+
+  2) Missing shell binary. Some Distributions such as Ubuntu
+  only include Dash's `/bin/sh` in the initramfs but set the
+  root shell to `/bin/bash`, by default.
+  Thus, explicitly adding the `bash` dracut module to the
+  `add_dracutmodule` directive fixes this issue. ([see
+  also](https://github.com/gsauthof/dracut-sshd/issues/30#issuecomment-4354263659))
+
+  3) systemd nssswitch configuration inclusion.
+  Depending on the installed packages, under some circumstances
+  dracut includes the systems `/etc/nsswitch.conf` that may
+  lead to systemd providing a root shadow line which yields
+  sshd's rejection.
+  One workaround for this issue is to add
+  (`systemd.setenv=SYSTEMD_NSS_BYPASS_SYNTHETIC=1`) to the kernel
+  command line. ([see
+  also](https://github.com/gsauthof/dracut-sshd/issues/92#issuecomment-3434609181))
+
 - Can I use dracut-sshd when my root account is locked?
 
   A: Yes, you can.
