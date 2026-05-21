@@ -378,6 +378,12 @@ possible.
   command line. ([see
   also](https://github.com/gsauthof/dracut-sshd/issues/92#issuecomment-3434609181))
 
+  4) Dracut's `systemd-sysusers` module writing a locked root
+  entry into the initramfs `/etc/shadow` too early. Fixed upstream in
+  dracut 107. Tracked for Debian as [bug #1108404][deb1108404]
+  and not yet fixed in Debian Trixie (current stable, still
+  shipping unpatched dracut 106 as of 2026-05-20).
+
 - Can I use dracut-sshd when my root account is locked?
 
   A: Yes, you can.
@@ -634,6 +640,7 @@ into an encrypted without having to re-install it from scratch.
 [port]: https://github.com/gsauthof/dracut-sshd/issues/9#issuecomment-531308602
 [entropy]: https://github.com/gsauthof/dracut-sshd/issues/12
 [iitems]: https://manpath.be/f32/dracut/050-26.git20200316.fc32.x86_64/5/dracut.conf#L74
+[deb1108404]: https://bugs.debian.org/1108404
 [i30]: https://github.com/gsauthof/dracut-sshd/issues/30
 [rpm-ostree]: https://discussion.fedoraproject.org/t/using-dracut-sshd-to-unlock-a-luks-encrypted-system/23449/6
 [pikvm]: https://github.com/pikvm/pikvm
