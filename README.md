@@ -334,6 +334,7 @@ possible.
   A: If you really [want to do that][port] you can provide a
   `/etc/sysconfig/dracut-sshd` that defines `SSHD_OPTS`
   ([see also][port]).
+
 - Why does sshd hangs during early-boot when running dracut-sshd
   inside a virtual machine (VM)?
 
@@ -418,6 +419,7 @@ possible.
   or simply set a strong password for the root user, followed
   by `dracut -f`.
   See also the previous question for additional details.
+
 - Does dracut-sshd only work with networkd?
 
   A: No, it doesn't.
@@ -441,9 +443,10 @@ possible.
   The same goes for configurations, e.g. perhaps for early boot a
   simple DHCP setups makes most sense while in late boot you have a
   more complicated network configuration.
+
 - How do I make it work on Ubuntu 20.04?
 
-  A: There are some pitfalls on Ubuntu. Firstly, dracut isn't
+  A: There are some pitfalls on older Ubuntu versions. Firstly, dracut isn't
   installed by default (fix: `apt install dracut-core
   dracut-network`). Secondly, dracut isn't a first class citizen
   on Ubuntu (i.e. it's only included in the universe repository,
@@ -452,6 +455,21 @@ possible.
   Grub configuration. Thus, you have to explicitly specify
   the right one (i.e. `/boot/initrd.img-$(uname -r)`) in the
   `dracut` and `lsinitrd` commands.
+
+  NB: Ubuntu officially supports dracut since 25.04 and defaults
+  to it for new installs since 25.10. Thus, running dracut-sshd
+  on Ubuntu should be more straight forward, nowadays.
+
+- Are there special considerations for dracut-sshd on image based
+  distributions such as Fedora Silverblue?
+
+  A: Yes. There are some reports of users that run dracut-sshd
+  successfully on Fedora Silverblue.
+  However, since image based distributions approach a few things
+  quite differently, be prepared for some extra configuration
+  that isn't covered in this README. See for example
+  a guide on [advanced network configuration](https://github.com/gsauthof/dracut-sshd/issues/93).
+
 - How do I debug dracut-sshd issues in the early boot
   environment?
 
@@ -602,19 +620,19 @@ into an encrypted without having to re-install it from scratch.
 
 ## Tested Environments
 
-- Fedora Silverblue 33
-- Fedora 27 to 43
-- Alma 10.1
+- Alma 10.1, 10.2
+- Arch (by a contributor)
 - CentOS 7, 8
 - CentOS Stream 9 (by a contributor)
+- Debian 12 (by a contributor)
+- Fedora 27 to 44
+- Fedora Silverblue 33, 41 (by contributors)
+- Gentoo (by a contributor)
+- openSUSE Leap 15.5, 16.0 (last one by a contributor)
 - RHEL 8 beta 1
 - Rocky Linux 8.8, 9, 10.1 (last two by contributors)
-- Gentoo (by a contributor)
 - SUSE (by a contributor)
-- openSUSE Leap 15.5, 16.0
-- Arch (by a contributor)
 - Ubuntu 20.04 LTS
-- Debian 12 (by a contributor)
 
 
 ## Packages
