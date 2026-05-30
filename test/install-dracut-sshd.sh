@@ -9,6 +9,8 @@ mydir=$(dirname -- "${BASH_SOURCE[0]}")
 dracut_dir="$mydir"/..
 guest=$(get_addr "$tag")
 
+: ${dracut_sshd_test_nohostonly_workaround:=disable}
+
 
 pushd "$dracut_dir"
 
@@ -34,14 +36,23 @@ dracut -f -v
 EOF
 else # RHEL, Alma, ... Linux distributions that lack networkd
 
-    # NB: RHEL/Alma images already have dracut-network pre-installed
-
     $scp  example/90-networkmanager.conf  root@"$guest":/etc/dracut.conf.d/90-networkmanager.conf
 
     $ssh root@"$guest" <<EOF
 set -eux
-
 dnf -y install dracut-network
+case $dracut_sshd_test_nohostonly_workaround in
+    disable)
+        dnf -y remove dracut-config-generic
+        usermod -p '*' root
+        ;;
+    bypass)
+        grubby --args=systemd.setenv=SYSTEMD_NSS_BYPASS_SYNTHETIC=1 --update-kernel=ALL
+        ;;
+    rmnfs)
+        dnf -y remove nfs-utils
+        ;;
+esac
 dracut -f -v
 EOF
 fi

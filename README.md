@@ -343,6 +343,7 @@ possible.
   restart timeout. Directing some of the VM host's entropy into
   the VM guest fixes this issue ([cf. these comments for
   examples of how to do this][entropy]).
+
 - Why do I get `Permission denied (publickey)` although the same
   authorized key works after the system is booted?
 
@@ -368,21 +369,45 @@ possible.
   `add_dracutmodule` directive fixes this issue. ([see
   also](https://github.com/gsauthof/dracut-sshd/issues/30#issuecomment-4354263659))
 
-  3) systemd nssswitch configuration inclusion.
+  3) Initramfs not built in hostonly mode.
+  Check `/usr/lib/dracut/dracut.conf.d/` and friends for the
+  `hostonly` directive.
+  Only if `hostonly=yes` is set then dracut includes a root line
+  into `etc/shadow`.
+
+  4) systemd nssswitch configuration inclusion.
   Depending on the installed packages, under some circumstances
-  dracut includes the systems `/etc/nsswitch.conf` that may
+  dracut includes an `etc/nsswitch.conf` that may
   lead to systemd providing a root shadow line which yields
   sshd's rejection.
   One workaround for this issue is to add
   (`systemd.setenv=SYSTEMD_NSS_BYPASS_SYNTHETIC=1`) to the kernel
   command line. ([see
   also](https://github.com/gsauthof/dracut-sshd/issues/92#issuecomment-3434609181))
+  However, usually, if the initramfs contains `etc/shadow` then
+  any root line present there has priority over alternate
+  nsswitch methods.
+  IOW, when dracut operates in hostonly mode and the root account
+  has a password (or is `*` locked) then the presence of nsswitch
+  configuration should be harmless.
 
-  4) Dracut's `systemd-sysusers` module writing a locked root
+  One common cause for `etc/nsswitch.conf` being included is the
+  presence of NFS utilities, i.e. after the `nfs-utils` package is
+  installed. Thus, if you don't need NFS, an alternative
+  workaround often is to just remove the `nfs-utils` package.
+
+  5) Dracut's `systemd-sysusers` module writing a locked root
   entry into the initramfs `/etc/shadow` too early. Fixed upstream in
   dracut 107. Tracked for Debian as [bug #1108404][deb1108404]
   and not yet fixed in Debian Trixie (current stable, still
   shipping unpatched dracut 106 as of 2026-05-20).
+
+  These configurations can be verified by unpacking the initramfs
+  into a temporary directory (e.g. via `lsinitrd --unpack`) and
+  inspecting the relevant files.
+
+  See also the `pubkey-login.dot` diagram for orientation:
+  <img width="600" src="https://github.com/user-attachments/assets/e683a1dd-5715-4184-bf76-564aa6e7d684" />
 
 - Can I use dracut-sshd when my root account is locked?
 

@@ -1,0 +1,42 @@
+
+
+strict digraph {
+
+    hostonly [label="hostonly?",shape=doubleoctagon]
+
+    nsswitch [label="etc/nsswitch.conf\nincluded?"]
+    shadow [label="root user is\nin etc/shadow",shape=box]
+
+    locked [label="root user locked?"]
+    shell [label="root user shell\nincluded?"]
+    locked_ok [label="locked with * ?"]
+
+    denied [label="Permission denied\n(publickey)",shape=box]
+    login [label="publickey login\nshould succeed",shape=box]
+
+    bypass [label="SYSTEMD_NSS_\nBYPASS_SYNTHETIC\n=1 set?"]
+
+
+    hostonly -> nsswitch [label="no"]
+    hostonly -> shadow [label="yes"]
+
+
+    shadow -> locked
+
+    locked -> shell [label="no"]
+    locked -> locked_ok [label="yes"]
+
+    locked_ok -> shell [label="yes"]
+    locked_ok -> denied [label="no"]
+
+    shell -> denied [label="no"]
+    shell -> login [label="yes"]
+
+    nsswitch -> login [label="no"]
+    nsswitch -> bypass [label="yes"]
+
+    bypass -> denied [label="no"]
+    bypass -> shell [label="yes"]
+
+
+}
