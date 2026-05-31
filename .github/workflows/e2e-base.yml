@@ -22,7 +22,7 @@ jobs:
               shell: sudo bash -e {0}
               run: |
                   apt update
-                  apt -y install socat xterm libvirt-clients virtinst libvirt-daemon-system qemu-system-x86 goxkcdpwgen guestfish
+                  apt -y install socat xterm libvirt-clients virtinst libvirt-daemon-system qemu-system-x86 goxkcdpwgen guestfish genisoimage
             - name: fix libvirt, kvm, guestfish permissions
               shell: sudo bash -e {0}
               run: |
@@ -60,6 +60,10 @@ jobs:
                       alma)
                           ../dracut-sshd/test/get-alma.sh
                           ../dracut-sshd/test/e2e.sh $(cat alma-release) alma
+                          ;;
+                      ubuntu)
+                          ../dracut-sshd/test/get-ubuntu.sh
+                          ../dracut-sshd/test/e2e.sh $(cat ubuntu-release) ubuntu
                           ;;
                   esac
 

@@ -12,6 +12,7 @@ jobs:
                     - fedora
                     - rawhide
                     - alma
+                    - ubuntu
             fail-fast: false
         uses: ./.github/workflows/e2e-base.yml
         with:
