@@ -27,11 +27,11 @@ function sync_shutdown
 {
     local tag=$1
     virsh --connect qemu:///system shutdown "$tag"
-    for ((i=0; i<3; ++i)); do
+    for ((i=0; i<13; ++i)); do
         if [ "$(virsh --connect qemu:///system domstate "$tag")" = 'shut off' ]; then
             return 0
         fi
-        sleep 1
+        sleep $((1 + i/3))
     done
     echo "$tag not shut down in time ..." >&2
     return 1
