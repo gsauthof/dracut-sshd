@@ -20,7 +20,7 @@ fi
 rm -f "$dst"
 qemu-img create -F qcow2 -b "$src" -f qcow2 "$dst" 10g
 
-cat <<EOF > cloud-init.yml
+cat <<EOF > user-data
 #cloud-config
 users:
   - name: root
@@ -35,9 +35,28 @@ $(sed 's/^/        /' host-key-ed25519)
     ed25519_public: $(cat host-key-ed25519.pub)
 EOF
 
-cat <<EOF > meta-data.yml
+cat <<EOF > meta-data
 instance-id: fubar
 EOF
+
+genisoimage -output cloud-init.iso -volid cidata -joliet -rock user-data meta-data
+
+
+if [ $distri = ubuntu ]; then
+    osinfo=ubuntu-lts-latest
+else
+    osinfo=fedora-unknown
+fi
+
+
+# NB: we aren't using
+#
+#     --cloud-init user-data=user-data,meta-data=meta-data
+#
+# due to a bug in Ubuntu's cloud images:
+#
+# https://github.com/canonical/cloud-init/issues/3897#issuecomment-2800021424
+# https://github.com/virt-manager/virt-manager/issues/1099
 
 virt-install --connect qemu:///system \
     --name "$tag" \
@@ -47,8 +66,11 @@ virt-install --connect qemu:///system \
     --graphics none \
     --autoconsole none \
     --import \
-    --disk "$dst",format=qco2,bus=virtio \
-    --osinfo fedora-unknown \
-    --cloud-init user-data=cloud-init.yml,meta-data=meta-data.yml
+    --disk "$dst",format=qcow2,bus=virtio \
+    --disk cloud-init.iso \
+    --osinfo $osinfo
 
 wait4sshd "$tag"
+
+# detach cloud-init.iso
+virsh --connect qemu:///system  detach-disk "$tag" vdb --config

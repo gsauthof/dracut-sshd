@@ -34,6 +34,21 @@ systemctl enable systemd-networkd
 
 dracut -f -v
 EOF
+elif [ "$distri" = ubuntu ]; then
+    $scp  example/20-wired.network  root@"$guest":/etc/systemd/network/20-wired.network
+    $scp  example/90-networkd-ubuntu.conf  root@"$guest":/etc/dracut.conf.d/90-networkd.conf
+
+    $ssh root@"$guest" <<EOF
+set -eux
+
+# NB: at least the Ubuntu 26.04 cloud image already contains that package
+apt update
+apt -y install dracut-network
+
+usermod -p '*' root
+
+dracut -f -v
+EOF
 else # RHEL, Alma, ... Linux distributions that lack networkd
 
     $scp  example/90-networkmanager.conf  root@"$guest":/etc/dracut.conf.d/90-networkmanager.conf

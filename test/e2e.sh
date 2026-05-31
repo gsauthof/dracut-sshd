@@ -5,8 +5,11 @@ set -eux
 mydir=$(dirname -- "${BASH_SOURCE[0]}")
 . "$mydir"/conf.sh
 
-# XXX download latest stable/rawhide
-# "$mydir"/get-fedora.sh "$release"
+# download latest stable/rawhide fedora before invoking this script:
+#
+#     "$mydir"/get-fedora.sh "$release"
+#
+# cf. other get-*.sh scripts for other distributions
 
 if [ ! -e ssh-user.pub -o ! -e ssh-user ]; then
     ssh-keygen -t ed25519 -f $PWD/ssh-user -N ''
@@ -25,12 +28,21 @@ fi
 
 sync_shutdown "$tag"
 
-if [ "$distri" = f ]; then
-    "$mydir"/encrypt-fedora.sh "$@"
-else
-    "$mydir"/encrypt-rhel.sh "$@"
+case "$distri" in
+    f)
+        "$mydir"/encrypt-fedora.sh "$@"
+    ;;
+    ubuntu)
+        "$mydir"/encrypt-ubuntu.sh "$@"
+    ;;
+    *)
+        "$mydir"/encrypt-rhel.sh "$@"
+    ;;
+esac
+
+if [ "$distri" != ubuntu ]; then
+    "$mydir"/update-grub.sh "$@"
 fi
-"$mydir"/update-grub.sh "$@"
 
 sync_poweron "$tag"
 wait4sshd "$tag"

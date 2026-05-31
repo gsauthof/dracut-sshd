@@ -10,7 +10,7 @@ and systemd as init system, such as Fedora, CentOS/RHEL (version
 7 or greater) and SUSE. Gentoo is also to known to work with
 dracut-sshd, as long as it's configured with systemd and Dracut.
 
-2018-2025, Georg Sauthoff <mail@gms.tf>, GPLv3+
+2018-2026, Georg Sauthoff <mail@gms.tf>, GPLv3+
 
 ## TOC
 
@@ -91,7 +91,7 @@ your distribution's package repository, where available (e.g. the
 Either way, once present under `/usr/lib/dracut/modules.d` it's
 enabled, by default.
 
-With an older sshd (i.e. older that 9.8 _and_ lacking patched-in
+With an older sshd (i.e. older than 9.8 _and_ lacking patched-in
 systemd support), one has to adjust the systemd service file:
 
     # echo 'Skip this sed on Fedora/RHEL/CentOS/Debian/Ubuntu/...!'
@@ -147,6 +147,11 @@ install_items+=" /etc/systemd/network/20-wired.network "
 add_dracutmodules+=" systemd-networkd "
 ```
 
+Depending on the distribution, other dracut modules might need to
+be explicitly listed, as well. For example, on Ubuntu one need to
+add the bash module, as well (cf.
+`example/90-networkd-ubuntu.conf`).
+
 Alternatively, early boot network connectivity can be configured
 by other means (i.e.  kernel parameters, see below).  However,
 the author of this README strongly recommends to use Networkd
@@ -161,12 +166,6 @@ example configuration files from the `example/` subdirectory:
 Finally regenerate the initramfs:
 
     # dracut -f -v
-
-Note that Ubuntu's dracut defaults to an initramfs filename that
-is incompatible with Ubuntu's grub default initrd settings ... m(
-Thus, on Ubuntu one has to explicitly specify the initramfs filename like this:
-
-    # dracut -f -v /boot/initrd.img-$(uname -r)
 
 Verify that this `sshd` module is included. Either via inspecting the verbose
 output or via `lsinitrd`, e.g.:
@@ -368,7 +367,8 @@ possible.
   root shell to `/bin/bash`, by default.
   Thus, explicitly adding the `bash` dracut module to the
   `add_dracutmodule` directive fixes this issue. ([see
-  also](https://github.com/gsauthof/dracut-sshd/issues/30#issuecomment-4354263659))
+  also](https://github.com/gsauthof/dracut-sshd/issues/30#issuecomment-4354263659)
+  and `example/90-networkd-ubuntu.conf`)
 
   3) Initramfs not built in hostonly mode.
   Check `/usr/lib/dracut/dracut.conf.d/` and friends for the
@@ -444,21 +444,17 @@ possible.
   simple DHCP setups makes most sense while in late boot you have a
   more complicated network configuration.
 
-- How do I make it work on Ubuntu 20.04?
+- Does dracut-sshd also work on Ubuntu?
 
-  A: There are some pitfalls on older Ubuntu versions. Firstly, dracut isn't
-  installed by default (fix: `apt install dracut-core
-  dracut-network`). Secondly, dracut isn't a first class citizen
-  on Ubuntu (i.e. it's only included in the universe repository,
-  not in the main repository). As a result, the default dracut
-  initramfs filename doesn't match what Ubuntu uses in its
-  Grub configuration. Thus, you have to explicitly specify
-  the right one (i.e. `/boot/initrd.img-$(uname -r)`) in the
-  `dracut` and `lsinitrd` commands.
-
-  NB: Ubuntu officially supports dracut since 25.04 and defaults
-  to it for new installs since 25.10. Thus, running dracut-sshd
-  on Ubuntu should be more straight forward, nowadays.
+  A: Yes, Ubuntu officially supports dracut since 25.04 and defaults
+  to it for new installs since 25.10.
+  However, as of 26.04, the minimal Ubuntu cloud image, doesn't
+  come with dracut installed.
+  A common pitfalls is that Ubuntu locks the root account with
+  `!*`, by default, which needs to be changed (cf. above).
+  Also, in contrast to Fedora/RHEL, one need to explicitly
+  include the bash dracut module (see above and
+  `example/90-networkd-ubuntu.conf`).
 
 - Are there special considerations for dracut-sshd on image based
   distributions such as Fedora Silverblue?
@@ -632,7 +628,7 @@ into an encrypted without having to re-install it from scratch.
 - RHEL 8 beta 1
 - Rocky Linux 8.8, 9, 10.1 (last two by contributors)
 - SUSE (by a contributor)
-- Ubuntu 20.04 LTS
+- Ubuntu 20.04 LTS, 26.04 LTS
 
 
 ## Packages
