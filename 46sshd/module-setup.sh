@@ -31,6 +31,10 @@ install() {
                     "$initdir/etc/ssh/ssh_host_${key_type}_key"
             found_host_key=yes
         fi
+        ssh_host_cred="/etc/credstore.encrypted/dracut_ssh_host_${key_type}_key"
+        if [ -f "$ssh_host_cred" ]; then
+            inst_simple "$ssh_host_cred"
+        fi
     done
     if [ "$found_host_key" = no ]; then
         dfatal "Didn't find any SSH host key!"
@@ -118,4 +122,3 @@ install() {
 
     return 0
 }
-

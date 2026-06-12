@@ -258,6 +258,40 @@ host key in the initramfs image  provides no value to the
 attacker given that the root filesystem is fully encrypted (and
 that the host key isn't reused in the replacement system).
 
+### Encrypted Host Keys (TPM)
+
+To prevent the extraction of unencrypted host keys from the
+initramfs, you can store host keys as encrypted systemd
+credentials protected by a [TPM]. This is useful when building a
+signed Unified Kernel Image (UKI) and binding to TPM PCRs.
+
+You can create encrypted system credentials using `systemd-creds`
+and store them in `/etc/credstore.encrypted/` which dracut-sshd
+will include in the initramfs. systemd-boot also supports storing
+them in the EFI system partition under `loader/credentials/` with
+a `.cred` suffix.
+
+The following credential names are supported:
+
+- `dracut_ssh_host_ecdsa_key`
+- `dracut_ssh_host_ed25519_key`
+- `dracut_ssh_host_rsa_key`
+
+For example, to encrypt an Ed25519 host key and bind it to TPM
+PCRs 7 (secure boot state) and 14 (machine owner key):
+
+    ssh-keygen -f /etc/ssh/dracut_ssh_host_ed25519_key -N '' -t ed25519
+    ssh-keygen -f /etc/ssh/dracut_ssh_tpm_host_ed25519_key -N '' -t ed25519
+    systemd-creds encrypt --with-key=tpm2 --tpm2-pcrs=7+14 \
+        /etc/ssh/dracut_ssh_tpm_host_ed25519_key \
+        /etc/credstore.encrypted/dracut_ssh_host_ed25519_key
+
+dracut-sshd still requires unencrypted host keys in the initramfs
+in case encrypted host keys fail to unseal (e.g., due to PCR
+change or a broken TPM). You can generate at least one
+unencrypted key (e.g., `/etc/ssh/dracut_ssh_host_ed25519_key`) to
+avoid including the system's host keys as the fallback.
+
 ## Timeout
 
 With recent Fedora versions (e.g. Fedora 28) a cryptsetup
