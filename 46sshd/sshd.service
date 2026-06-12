@@ -20,6 +20,19 @@ EnvironmentFile=-/etc/sysconfig/sshd
 EnvironmentFile=-/etc/sysconfig/ssh
 EnvironmentFile=-/etc/sysconfig/dracut-sshd
 
+# Import SSH host keys from systemd credentials if available.
+# This allows storing host keys encrypted (e.g., bound to TPM PCRs)
+# in the EFI system partition or initrd.
+ImportCredential=dracut_ssh_host_*
+
+# If credentials were successfully imported, copy them to the
+# expected locations, overriding any unencrypted host keys.
+# If credentials fail to unseal or are missing, the existing
+# unencrypted host keys will be used as a fallback.
+ExecStartPre=-/bin/cp ${CREDENTIALS_DIRECTORY}/dracut_ssh_host_ecdsa_key /etc/ssh/ssh_host_ecdsa_key
+ExecStartPre=-/bin/cp ${CREDENTIALS_DIRECTORY}/dracut_ssh_host_ed25519_key /etc/ssh/ssh_host_ed25519_key
+ExecStartPre=-/bin/cp ${CREDENTIALS_DIRECTORY}/dracut_ssh_host_rsa_key /etc/ssh/ssh_host_rsa_key
+
 # Start command requires the `-e` option if and only if `Type=simple`
 # is configured, see above.
 ExecStart=/usr/sbin/sshd -D $SSHD_OPTS $OPTIONS $CRYPTO_POLICY
