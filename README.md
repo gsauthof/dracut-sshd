@@ -1,4 +1,6 @@
 [![CI Build Status](https://github.com/gsauthof/dracut-sshd/actions/workflows/e2e-trigger.yml/badge.svg)](https://github.com/gsauthof/dracut-sshd/actions/workflows/e2e-trigger.yml)
+[![License](https://img.shields.io/badge/license-GPL--3+-blue.svg)][gpl]
+[![No LLMs](https://img.shields.io/badge/No-LLMs-A5A502.svg)][neverslop]
 
 This [Dracut][dracut] module (dracut-sshd) integrates the
 [OpenSSH][ossh] sshd into the [initramfs][iramfs]. It allows for
@@ -687,3 +689,5 @@ into an encrypted without having to re-install it from scratch.
 [tang]: https://github.com/latchset/tang
 [mandos]: https://www.recompile.se/mandos
 [unluks]: https://github.com/BarbarossaTM/fluffy-unluks
+[gpl]: https://en.wikipedia.org/wiki/GNU_General_Public_License
+[neverslop]: https://gracefulliberty.com/llms/
