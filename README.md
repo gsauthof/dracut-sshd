@@ -463,8 +463,8 @@ possible.
   successfully on Fedora Silverblue.
   However, since image based distributions approach a few things
   quite differently, be prepared for some extra configuration
-  that isn't covered in this README. See for example
-  a guide on [advanced network configuration](https://github.com/gsauthof/dracut-sshd/issues/93).
+  that isn't covered in this README. See also
+  a [contributed Silverguide guide](https://github.com/gsauthof/dracut-sshd/issues/129).
 
 - How do I debug dracut-sshd issues in the early boot
   environment?
