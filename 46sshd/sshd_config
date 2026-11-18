@@ -2,6 +2,7 @@ SyslogFacility                  AUTHPRIV
 PermitRootLogin                 prohibit-password
 AuthorizedKeysFile              .ssh/authorized_keys
 AuthenticationMethods           publickey
+PasswordAuthentication          no
 UsePAM                          no
 X11Forwarding                   no
 Subsystem sftp                  internal-sftp
